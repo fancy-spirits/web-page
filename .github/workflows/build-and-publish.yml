@@ -1,0 +1,46 @@
+name: Build and publish Webpage
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  build-web:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build the Docker image (Web)
+      run: docker build ./fancy-spirits-webpage --file Dockerfile --tag doxblek/fancy-spirits-webpage:$(date +%s)
+    
+  deploy:
+    needs: [build-web]
+    runs-on: ubuntu-latest
+    
+    #steps:
+    #- name: Install SSH Key
+    #  uses: shimataro/ssh-key-action@v2
+    #  with:
+    #    key: ${{ secrets.SSH_PRIVATE_KEY }}
+    #    known_hosts: ${{ secrets.SSH_HOST }}
+    #    
+    #- name: Adding known hosts
+    #  run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+    
+    steps:
+    - name: Pull and Run Docker Image via SSH
+      uses: cross-the-world/ssh-pipeline@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        user: ${{ secrets.SSH_USER }}
+        pass: ${{ secrets.SSH_USER_PWD }}
+        script: |
+          docker pull doxblek/fancy-spirits-webpage
+          docker run --rm -d -it -p 80:80 
+        
+      
+      
