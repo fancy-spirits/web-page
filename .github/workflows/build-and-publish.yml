@@ -25,14 +25,14 @@ jobs:
       run: docker pull doxblek/fancy-spirits-webpage
       
     - name: Create Version Tag
-      run: export TAG=$(date +%s)
+      run: echo "TAG=$(date +%s)" >> $GITHUB_ENV
         
     - name: Build the Docker image (Web)
       run: |
         echo $TAG
         echo ${{ env.TAG }}
         cd fancy-spirits-webpage
-        docker build . --file Dockerfile --tag doxblek/fancy-spirits-webpage:${{ env.TAG }}
+        docker build . --file Dockerfile --tag doxblek/fancy-spirits-webpage:$TAG
         
     - name: Push the Docker Image 
       run: docker push doxblek/fancy-spirits-webpage:${{ env.TAG }}
