@@ -25,7 +25,7 @@ jobs:
       run: docker pull doxblek/fancy-spirits-webpage
       
     - name: Create Version Tag
-      run: echo $(date +%s) >> $TAG
+      run: export TAG=$(date +%s)
         
     - name: Build the Docker image (Web)
       run: |
