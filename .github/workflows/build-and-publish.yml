@@ -40,6 +40,15 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
+    - name: Stop old container
+      uses: cross-the-world/ssh-pipeline@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        user: ${{ secrets.SSH_USER }}
+        pass: ${{ secrets.SSH_USER_PWD }}
+        script: |
+          ([ ! -z "$(docker ps -a | grep fancy-spirits-webpage)" ] && (docker stop fancy-spirits-webpage && echo "Stopped existing container") || echo "No existing container...")
+        
     - name: Pull and Run Docker Image via SSH
       uses: cross-the-world/ssh-pipeline@master
       with:
@@ -47,7 +56,6 @@ jobs:
         user: ${{ secrets.SSH_USER }}
         pass: ${{ secrets.SSH_USER_PWD }}
         script: |
-          ([ ! -z "$(docker ps -a | grep fancy-spirits-webpage)" ] && docker stop fancy-spirits-webpage)
           (docker pull doxblek/fancy-spirits-webpage)
           (docker run --rm -d -it -p 80:80 --name fancy-spirits-webpage doxblek/fancy-spirits-webpage)
         
