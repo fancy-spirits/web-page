@@ -47,7 +47,7 @@ jobs:
         user: ${{ secrets.SSH_USER }}
         pass: ${{ secrets.SSH_USER_PWD }}
         script: |
-          [ ! -z $(docker ps -a | grep fancy-spirits-webpage) ] && docker stop fancy-spirits-webpage
+          [ ! -z "$(docker ps -a | grep fancy-spirits-webpage)" ] && docker stop fancy-spirits-webpage
           docker pull doxblek/fancy-spirits-webpage
           docker run --rm -d -it -p 80:80 --name fancy-spirits-webpage doxblek/fancy-spirits-webpage
         
