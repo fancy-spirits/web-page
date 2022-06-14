@@ -14,12 +14,20 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    
+    - name: Login to Docker
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PWD }}
+        
     - name: Build the Docker image (Web)
       run: |
-        docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PWD }}
         cd fancy-spirits-webpage
         docker build . --file Dockerfile --tag doxblek/fancy-spirits-webpage:$(date +%s)
-        docker push doxblek/fancy-spirits-webpage
+        
+    - name: Push the Docker Image 
+      run: docker push doxblek/fancy-spirits-webpage
     
   deploy:
     needs: [build-web]
