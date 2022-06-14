@@ -30,10 +30,10 @@ jobs:
     - name: Build the Docker image (Web)
       run: |
         cd fancy-spirits-webpage
-        docker build . --file Dockerfile --tag doxblek/fancy-spirits-webpage:$TAG
+        docker build . --file Dockerfile --tag doxblek/fancy-spirits-webpage:${{ env.TAG }}
         
     - name: Push the Docker Image 
-      run: docker push doxblek/fancy-spirits-webpage:$TAG
+      run: docker push doxblek/fancy-spirits-webpage:${{ env.TAG }}
     
   deploy:
     needs: [build-web]
