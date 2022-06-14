@@ -29,27 +29,15 @@ jobs:
         
     - name: Build the Docker image (Web)
       run: |
-        echo $TAG
-        echo ${{ env.TAG }}
         cd fancy-spirits-webpage
         docker build . --file Dockerfile --tag doxblek/fancy-spirits-webpage:$TAG
         
     - name: Push the Docker Image 
-      run: docker push doxblek/fancy-spirits-webpage:${{ env.TAG }}
+      run: docker push doxblek/fancy-spirits-webpage:$TAG
     
   deploy:
     needs: [build-web]
     runs-on: ubuntu-latest
-    
-    #steps:
-    #- name: Install SSH Key
-    #  uses: shimataro/ssh-key-action@v2
-    #  with:
-    #    key: ${{ secrets.SSH_PRIVATE_KEY }}
-    #    known_hosts: ${{ secrets.SSH_HOST }}
-    #    
-    #- name: Adding known hosts
-    #  run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
     
     steps:
     - name: Pull and Run Docker Image via SSH
@@ -60,7 +48,7 @@ jobs:
         pass: ${{ secrets.SSH_USER_PWD }}
         script: |
           docker pull doxblek/fancy-spirits-webpage
-          docker run --rm -d -it -p 80:80 
+          docker run --rm -d -it -p 80:80 doxblek/fancy-spirits-webpage
         
       
       
