@@ -12,10 +12,10 @@
         <div class="nav-items" id="mobile-menu">
             <ul>
                 <li>
-                    <a href="/" class="link" aria-current="page">Home</a>
+                    <a [routerLink]="['/home']" [routerLinkActive]="['current']" class="link" aria-current="page">Home</a>
                 </li>
                 <li>
-                    <a href="/artists" class="current">Artists</a>
+                    <a [routerLink]="['/artists']" [routerLinkActive]="['current']" class="link">Artists</a>
                 </li>
             </ul>
         </div>
