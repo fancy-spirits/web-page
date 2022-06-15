@@ -6,3 +6,12 @@
 * {
     font-family: "Poppins", sans-serif;
 }
+
+.page-header {
+    @apply bg-gray-200 py-5 px-3 flex justify-center shadow-md;
+
+    h1 {
+        font-size: 2em;
+        font-weight: 300;
+    }
+}
