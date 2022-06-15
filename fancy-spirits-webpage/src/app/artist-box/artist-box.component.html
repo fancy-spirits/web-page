@@ -1,14 +1,13 @@
 
 <div class="card">
     <div class="top">
-        <img class="artistPicture" src="../../assets/doxblek.jpeg">
-        <h1 class="artistName">doxbleK</h1>
+        <img class="artistPicture" [src]="artistImage">
+        <h1 class="artistName">{{artistName}}</h1>
     </div>
     <div class="biography">
         <h2>Biography</h2>
-        <p>doxbleK is a world-wide known versatile artist mostly known for his Drum & Bass releases. Together with Jon Kat he majorly influenced that genre...</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias mollitia pariatur illum voluptates labore consectetur ex beatae rem deleniti, ut suscipit sunt doloribus. Quam beatae rem nulla ullam minima debitis.
-        </p>
+        <div [innerHTML]="biography">
+        </div>
     </div>
     <div class="socialMediaLinks">
         <a href="#"><fa-icon [icon]="faSpotify" size="2x" pull="left"></fa-icon></a>
@@ -16,7 +15,7 @@
         <a href="#"><fa-icon [icon]="faYoutube" size="2x"></fa-icon></a>
         <a href="#"><fa-icon [icon]="faSoundcloud" size="2x"></fa-icon></a>
     </div>
-    <p class="genres">Drum & Bass, House, Electro</p>
+    <p class="genres">{{genres.join(", ")}}</p>
 
     <div class="releases">
         
