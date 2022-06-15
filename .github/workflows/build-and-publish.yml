@@ -22,7 +22,7 @@ jobs:
         password: ${{ secrets.DOCKER_PWD }}
         
     - name: Pull most recent image
-      run: docker pull doxblek/fancy-spirits-webpage
+      run: docker pull doxblek/fancy-spirits-webpage:latest
       
     - name: Create Version Tag
       run: echo "TAG=$(date +%s)" >> $GITHUB_ENV
@@ -30,16 +30,27 @@ jobs:
     - name: Build the Docker image (Web)
       run: |
         cd fancy-spirits-webpage
-        docker build . --file Dockerfile --tag doxblek/fancy-spirits-webpage:$TAG
+        docker build . --file Dockerfile --tag doxblek/fancy-spirits-webpage:$TAG --tag doxblek/fancy-spirits-webpage:latest
         
     - name: Push the Docker Image 
-      run: docker push doxblek/fancy-spirits-webpage:$TAG
+      run: |
+        docker push doxblek/fancy-spirits-webpage:$TAG
+        docker push doxblek/fancy-spirits-webpage:latest
     
   deploy:
     needs: [build-web]
     runs-on: ubuntu-latest
     
     steps:
+    - name: Stop old container
+      uses: cross-the-world/ssh-pipeline@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        user: ${{ secrets.SSH_USER }}
+        pass: ${{ secrets.SSH_USER_PWD }}
+        script: |
+          ([ ! -z "$(docker ps -a | grep fancy-spirits-webpage)" ] && (docker stop fancy-spirits-webpage && echo "Stopped existing container") || echo "No existing container...")
+        
     - name: Pull and Run Docker Image via SSH
       uses: cross-the-world/ssh-pipeline@master
       with:
@@ -47,8 +58,8 @@ jobs:
         user: ${{ secrets.SSH_USER }}
         pass: ${{ secrets.SSH_USER_PWD }}
         script: |
-          docker pull doxblek/fancy-spirits-webpage
-          docker run --rm -d -it -p 80:80 doxblek/fancy-spirits-webpage
+          (docker pull doxblek/fancy-spirits-webpage:latest)
+          (docker run --rm -d -it -p 80:80 --name fancy-spirits-webpage doxblek/fancy-spirits-webpage)
         
       
       
