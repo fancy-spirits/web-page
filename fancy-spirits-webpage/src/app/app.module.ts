@@ -7,10 +7,12 @@ import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontaweso
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { faSpotify, faItunes, faYoutube, faSoundcloud, fab } from '@fortawesome/free-brands-svg-icons';
 import { far } from '@fortawesome/free-regular-svg-icons';
+import { NavigationBarComponent } from './navigation-bar/navigation-bar.component';
 
 @NgModule({
   declarations: [
     AppComponent,
+    NavigationBarComponent,
   ],
   imports: [
     BrowserModule,
@@ -22,8 +24,8 @@ import { far } from '@fortawesome/free-regular-svg-icons';
 })
 export class AppModule {
   constructor(library: FaIconLibrary) {
-    // library.addIconPacks(fas);
-    // library.addIconPacks(far);
+    library.addIconPacks(fas);
+    library.addIconPacks(far);
     library.addIconPacks(fab);
     library.addIcons(faSpotify, faItunes, faSoundcloud, faYoutube);
   }
