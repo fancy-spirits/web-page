@@ -15,13 +15,22 @@ CREATE TABLE "releases" (
 	"id" serial NOT NULL UNIQUE,
 	"name" TEXT NOT NULL,
 	"release_date" DATE NOT NULL,
-	"genre" uuid NOT NULL,
 	"release_type" TEXT NOT NULL,
 	"artwork" bytea NOT NULL,
 	"description" TEXT,
 	CONSTRAINT "releases_pk" PRIMARY KEY ("id")
 ) WITH (
   OIDS=FALSE
+);
+
+CREATE TABLE "release_items" (
+	"id" serial NOT NULL UNIQUE,
+	"name" TEXT NOT NULL,
+	"genre" uuid NOT NULL,
+	"release" uuid NOT NULL,
+	CONSTRAINT "release_items_pk" PRIMARY KEY ("id")
+) WITH (
+	OIDS=FALSE
 );
 
 
@@ -86,8 +95,8 @@ CREATE TABLE "users" (
 
 ALTER TABLE "artists" ADD CONSTRAINT "artists_fk0" FOREIGN KEY ("user") REFERENCES "users"("id");
 
-ALTER TABLE "releases" ADD CONSTRAINT "releases_fk0" FOREIGN KEY ("genre") REFERENCES "genre"("id");
-
+ALTER TABLE "release_items" ADD CONSTRAINT "release_items_fk0" FOREIGN KEY ("genre") REFERENCES "genre"("id");
+ALTER TABLE "release_items" ADD CONSTRAINT "release_items_fk1" FOREIGN KEY ("release") REFERENCES "releases"("id");
 
 ALTER TABLE "release_contribution" ADD CONSTRAINT "release_contribution_fk0" FOREIGN KEY ("artist") REFERENCES "artists"("id");
 ALTER TABLE "release_contribution" ADD CONSTRAINT "release_contribution_fk1" FOREIGN KEY ("release") REFERENCES "releases"("id");
