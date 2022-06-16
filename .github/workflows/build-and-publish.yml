@@ -87,7 +87,7 @@ jobs:
         user: ${{ secrets.SSH_USER }}
         pass: ${{ secrets.SSH_USER_PWD }}
         script: |
-          ([ ! -z "$(docker ps -a | grep fancy-spirits-db)" ] && (docker stop fancy-spirits-db && echo "Stopped existing container") || echo "No existing container...")
+          ([ ! -z "$(docker ps -a | grep fancy-spirits-webpage-db)" ] && (docker stop fancy-spirits-webpage-db && echo "Stopped existing container") || echo "No existing container...")
         
     - name: Pull and Run Docker Image via SSH (db)
       uses: cross-the-world/ssh-pipeline@master
