@@ -1,1 +1,38 @@
-<p>artist-page works!</p>
+<div class="page-header">
+    <h1>Artists</h1>
+</div>
+
+<div class="toolbar">
+    <button (click)="onNewArtist()">New</button>
+    <app-add-artist-modal [visible]="addArtistModalVisible"></app-add-artist-modal>
+</div>
+
+<div class="artist-table flex flex-col">
+    <div class="overflow-x-auto sm:-mx-6 lg:-mx-8">
+      <div class="inline-block min-w-full sm:px-6 lg:px-8">
+        <div class="overflow-hidden">
+          <table class="min-w-full text-center">
+            <thead class="border-b bg-gray-800">
+              <tr>
+                <th scope="col" class="text-sm font-medium text-white px-6 py-4">
+                </th>
+                <th scope="col" class="text-sm font-medium text-white px-6 py-4">
+                  Name
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="bg-white border-b" *ngFor="let artist of artists">
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    Image goes here
+                </td>
+                <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                  {{artist.name}}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>

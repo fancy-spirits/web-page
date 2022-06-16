@@ -46,7 +46,8 @@
             }
 
             &:hover {
-                @apply text-gray-200 bg-slate-500;
+                @apply bg-slate-500;
+                color: white !important;
             }
 
             &.link:not(.current) {

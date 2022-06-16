@@ -9,3 +9,12 @@
     margin: 0;
     padding: 0;
 }
+
+.page-header {
+    @apply bg-gray-200 py-4 px-3 flex justify-center shadow-md;
+
+    h1 {
+        font-size: 2em;
+        font-weight: 300;
+    }
+}
