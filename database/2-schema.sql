@@ -1,5 +1,7 @@
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 CREATE TABLE "artists" (
-	"id" serial NOT NULL,
+	"id" uuid NOT NULL DEFAULT uuid_generate_v4(),
 	"name" TEXT NOT NULL UNIQUE,
 	"picture" bytea NOT NULL,
 	"biography" serial NOT NULL,
@@ -12,7 +14,7 @@ CREATE TABLE "artists" (
 
 
 CREATE TABLE "releases" (
-	"id" serial NOT NULL UNIQUE,
+	"id" uuid NOT NULL DEFAULT uuid_generate_v4(),
 	"name" TEXT NOT NULL,
 	"release_date" DATE NOT NULL,
 	"release_type" TEXT NOT NULL,
@@ -24,7 +26,7 @@ CREATE TABLE "releases" (
 );
 
 CREATE TABLE "release_items" (
-	"id" serial NOT NULL UNIQUE,
+	"id" uuid NOT NULL DEFAULT uuid_generate_v4(),
 	"name" TEXT NOT NULL,
 	"genre" uuid NOT NULL,
 	"release" uuid NOT NULL,
@@ -36,7 +38,7 @@ CREATE TABLE "release_items" (
 
 
 CREATE TABLE "genre" (
-	"id" serial NOT NULL,
+	"id" uuid NOT NULL DEFAULT uuid_generate_v4(),
 	"name" TEXT NOT NULL UNIQUE,
 	CONSTRAINT "genre_pk" PRIMARY KEY ("id")
 ) WITH (
@@ -56,7 +58,7 @@ CREATE TABLE "release_contribution" (
 
 
 CREATE TABLE "streaming_link" (
-	"id" serial NOT NULL,
+	"id" uuid NOT NULL DEFAULT uuid_generate_v4(),
 	"service" TEXT NOT NULL,
 	"link" TEXT NOT NULL,
 	"release" uuid NOT NULL,
@@ -68,7 +70,7 @@ CREATE TABLE "streaming_link" (
 
 
 CREATE TABLE "social_link" (
-	"id" serial NOT NULL,
+	"id" uuid NOT NULL DEFAULT uuid_generate_v4(),
 	"platform" TEXT NOT NULL,
 	"link" TEXT NOT NULL,
 	"platform_type" TEXT NOT NULL,
@@ -81,7 +83,7 @@ CREATE TABLE "social_link" (
 
 
 CREATE TABLE "users" (
-	"id" serial NOT NULL UNIQUE,
+	"id" uuid NOT NULL DEFAULT uuid_generate_v4(),
 	"private_mail" TEXT NOT NULL UNIQUE,
 	"pwd_hash" TEXT NOT NULL,
 	"salt" TEXT NOT NULL,
