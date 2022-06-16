@@ -14,7 +14,6 @@ import { ReleaseBoxComponent } from './release-box/release-box.component';
   declarations: [
     AppComponent,
     NavigationBarComponent,
-    ReleaseBoxComponent,
   ],
   imports: [
     BrowserModule,

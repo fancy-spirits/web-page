@@ -1,0 +1,30 @@
+<div class="center">
+    <div class="card">
+        <div class="top">
+            <img [src]="artwork" alt="Album Artwork">
+            <div class="name-and-artists">
+                <h1>{{releaseName}}</h1>
+                <span class="artist">{{artists.join(" x ")}}</span>
+                <span class="release-type">{{releaseType}}</span>
+                <span class="release-date"><b>Released on: </b>{{releaseDate.toLocaleDateString()}}</span>
+            </div>
+        </div>
+        <hr>
+        <div class="body">
+            <h2>Stream on all platforms:</h2>
+            <div class="socialMediaLinks">
+                <a href="#"><fa-icon [icon]="faSpotify" size="2x" pull="left"></fa-icon></a>
+                <a href="#"><fa-icon [icon]="faItunes" size="2x"></fa-icon></a>
+                <a href="#"><fa-icon [icon]="faDeezer" size="2x"></fa-icon></a>
+                <a href="#"><fa-icon [icon]="faSoundcloud" size="2x"></fa-icon></a>
+                <a href="#"><fa-icon [icon]="faYoutube" size="2x"></fa-icon></a>
+            </div>
+            <div>
+                <h2>Genres:</h2>
+                <ul>
+                    <li *ngFor="let genre of genres" class="genres">{{genre}}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
