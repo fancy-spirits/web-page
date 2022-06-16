@@ -29,7 +29,6 @@ jobs:
         
     - name: Build the Docker image (Web)
       run: |
-        cd fancy-spirits-webpage
         docker build . --file Dockerfile --tag doxblek/fancy-spirits-webpage:$TAG --tag doxblek/fancy-spirits-webpage:latest
         
     - name: Push the Docker Image 
