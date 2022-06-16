@@ -1,0 +1,17 @@
+<div class="container">
+    <a routerLink="/">
+        <div class="top">
+            <img src="../../assets/doxblek.jpeg" alt="">
+            <div class="title">
+                <h1>Fancy Spirits</h1>
+                <span>Backend</span>
+            </div>
+        </div>
+    </a>
+    <hr>
+    <div class="links">
+        <div *ngFor="let route of routes" [routerLink]="route.route" [routerLinkActive]="['current']" class="link">
+            <fa-icon [icon]="route.icon"></fa-icon> {{route.name}}
+        </div>
+    </div>
+</div>

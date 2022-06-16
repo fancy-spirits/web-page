@@ -11,15 +11,6 @@
         </button> -->
         <div class="nav-items" id="mobile-menu">
             <ul>
-                <!-- <li>
-                    <a [routerLink]="['/home']" [routerLinkActive]="['current']" class="link" aria-current="page">Home</a>
-                </li>
-                <li>
-                    <a [routerLink]="['/artists']" [routerLinkActive]="['current']" class="link">Artists</a>
-                </li>
-                <li>
-                    <a [routerLink]="['/releases']" [routerLinkActive]="['current']" class="link">Releases</a>
-                </li> -->
                 <li *ngFor="let route of routes" [routerLink]="route.route" [routerLinkActive]="['current']" class="link">{{route.name}}</li>
             </ul>
         </div>
