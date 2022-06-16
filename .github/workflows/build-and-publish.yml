@@ -101,7 +101,7 @@ jobs:
         pass: ${{ secrets.SSH_USER_PWD }}
         script: |
           (docker pull doxblek/fancy-spirits-webpage-db:latest)
-          (docker run --rm -t -p 5432:5432 --name fancy-spirits-webpage-db -e POSTGRES_PASSWORD="$POSTGRES_ADMIN_PASSWORD" doxblek/fancy-spirits-webpage-db)
+          (docker run --rm -d -it -p 5432:5432 --name fancy-spirits-webpage-db -e POSTGRES_PASSWORD="$POSTGRES_ADMIN_PASSWORD" doxblek/fancy-spirits-webpage-db)
 
     - name: Pull and Run Docker Image via SSH (webpage)
       uses: cross-the-world/ssh-pipeline@master

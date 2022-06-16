@@ -1,0 +1,1 @@
+[![Build and publish Webpage](https://github.com/fancy-spirits/web-page/actions/workflows/build-and-publish.yml/badge.svg)](https://github.com/fancy-spirits/web-page/actions/workflows/build-and-publish.yml)
