@@ -100,9 +100,6 @@ jobs:
         user: ${{ secrets.SSH_USER }}
         pass: ${{ secrets.SSH_USER_PWD }}
         script: |
-          (echo $POSTGRES_FANCY_SPIRITS_USER)
-          (echo $POSTGRES_FANCY_SPIRITS_PASSWORD)
-          (echo $POSTGRES_ADMIN_PASSWORD)
           (docker pull doxblek/fancy-spirits-webpage-db:latest)
           (docker run --rm -d -it -p 5432:5432 --name fancy-spirits-webpage-db -e POSTGRES_PASSWORD="$POSTGRES_ADMIN_PASSWORD" doxblek/fancy-spirits-webpage-db)
 
