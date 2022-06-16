@@ -8,11 +8,13 @@ import { fas } from '@fortawesome/free-solid-svg-icons';
 import { faSpotify, faItunes, faYoutube, faSoundcloud, fab } from '@fortawesome/free-brands-svg-icons';
 import { far } from '@fortawesome/free-regular-svg-icons';
 import { NavigationBarComponent } from './navigation-bar/navigation-bar.component';
+import { ReleaseBoxComponent } from './release-box/release-box.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     NavigationBarComponent,
+    ReleaseBoxComponent,
   ],
   imports: [
     BrowserModule,
