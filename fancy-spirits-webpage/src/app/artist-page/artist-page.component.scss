@@ -1,6 +1,28 @@
+// .artists {
+//     background-color: yellow;
+//     display: flex;
+//     flex-wrap: wrap;
+//     // justify-content: space-between;
+//     justify-content: start;
+
+//     &::after {
+//         content: "";
+//         flex: auto;
+//     }
+// }
+
+.center {
+    // display: flex;
+}
 
 .artists {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, 40em);
+    grid-auto-columns: auto;
     justify-content: space-around;
+    grid-gap: 2em;
+
+    & > * {
+        margin: auto;
+    }
 }
