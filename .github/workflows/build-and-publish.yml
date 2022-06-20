@@ -207,6 +207,7 @@ jobs:
           pass: ${{ secrets.SSH_USER_PWD }}
           script: |
             cd $DEPLOY_DIR
+            rm -rf web-page
             git clone https://github.com/fancy-spirits/web-page.git
             mv web-page/* .
 
@@ -216,7 +217,7 @@ jobs:
           DEPLOY_DIR: ${{ secrets.SSH_TARGET_DIR }}
           POSTGRES_FANCY_SPIRITS_USER: ${{ secrets.POSTGRES_FANCY_SPIRITS_USER }}
           POSTGRES_FANCY_SPIRITS_PASSWORD: ${{ secrets.POSTGRES_FANCY_SPIRITS_PASSWORD }}
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_ADMIN_PASSWORD }}
+          POSTGRES_ADMIN_PASSWORD: ${{ secrets.POSTGRES_ADMIN_PASSWORD }}
           DB_USER: ${{ secrets.POSTGRES_FANCY_SPIRITS_USER }}
           DB_PASSWORD: ${{ secrets.POSTGRES_FANCY_SPIRITS_PASSWORD }}
         with:
