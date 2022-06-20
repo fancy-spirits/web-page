@@ -190,7 +190,7 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           REMOTE_HOST: ${{ secrets.SSH_HOST }}
           REMOTE_USER: ${{ secrets.SSH_USER }}
-          EXCLUDE: "/api/, /database/, /fancy-spirits-backend/, /fancy-spirits/webpage/"
+          EXCLUDE: "api, database, fancy-spirits-backend, fancy-spirits/webpage"
           TARGET: ${{ secrets.SSH_TARGET_DIR }} 
 
       - name: Run new deployment
