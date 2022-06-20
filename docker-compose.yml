@@ -1,0 +1,27 @@
+services:
+  postgres:
+    container_name: postgres
+    image: doxblek/fancy-spirits-webpage-db
+    ports:
+      - "5432:5432"
+    volumes: 
+      - db:/var/lib/postgres/data
+  api:
+    container_name: api
+    image: doxblek/fancy-spirits-webpage-api
+    environment:
+      DB_NAME: fancy_spirits
+    depends_on:
+      - postgres
+    ports:
+      - "5000:5000"
+  web:
+    container_name: webpage
+    image: doxblek/fancy-spirits-webpage
+    depends_on: 
+      - api
+    ports:
+      - "80:80"
+volumes:
+  db:
+    driver: local

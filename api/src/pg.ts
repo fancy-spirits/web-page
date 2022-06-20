@@ -1,7 +1,7 @@
 import { Pool, Client } from "pg";
 
 const pool = new Pool({
-    host: "127.0.0.1",
+    host: "postgres",
     port: 5432,
     database: process.env.DB_NAME,
     user: process.env.DB_USER,
