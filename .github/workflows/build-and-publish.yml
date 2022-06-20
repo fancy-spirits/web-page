@@ -171,6 +171,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Clone Repository
+        uses: actions/checkout@v2
+
       - name: Stop old deployment
         continue-on-error: true
         uses: cross-the-world/ssh-pipeline@master
