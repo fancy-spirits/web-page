@@ -216,14 +216,13 @@ jobs:
           DEPLOY_DIR: ${{ secrets.SSH_TARGET_DIR }}
           POSTGRES_FANCY_SPIRITS_USER: ${{ secrets.POSTGRES_FANCY_SPIRITS_USER }}
           POSTGRES_FANCY_SPIRITS_PASSWORD: ${{ secrets.POSTGRES_FANCY_SPIRITS_PASSWORD }}
-          POSTGRES_ADMIN_PASSWORD: ${{ secrets.POSTGRES_ADMIN_PASSWORD }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_ADMIN_PASSWORD }}
           DB_USER: ${{ secrets.POSTGRES_FANCY_SPIRITS_USER }}
           DB_PASSWORD: ${{ secrets.POSTGRES_FANCY_SPIRITS_PASSWORD }}
         with:
           host: ${{ secrets.SSH_HOST }}
           user: ${{ secrets.SSH_USER }}
           pass: ${{ secrets.SSH_USER_PWD }}
-          POSTGRES_ADMIN_PASSWORD: ${{ secrets.POSTGRES_ADMIN_PASSWORD }}
           script: |
             cd $DEPLOY_DIR
             docker compose stop
