@@ -2,6 +2,8 @@ services:
   postgres:
     container_name: postgres
     image: doxblek/fancy-spirits-webpage-db
+    environment:
+      POSTGRESS_PASSWORD: $POSTGRES_ADMIN_PASSWORD
     ports:
       - "5432:5432"
     volumes: 

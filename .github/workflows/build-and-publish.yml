@@ -223,6 +223,7 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           user: ${{ secrets.SSH_USER }}
           pass: ${{ secrets.SSH_USER_PWD }}
+          POSTGRES_ADMIN_PASSWORD: ${{ secrets.POSTGRES_ADMIN_PASSWORD }}
           script: |
             cd $DEPLOY_DIR
             docker compose stop
