@@ -64,9 +64,36 @@ jobs:
         docker push doxblek/fancy-spirits-webpage-db:$TAG
         docker push doxblek/fancy-spirits-webpage-db:latest
 
+  build-api:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Login to Docker
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PWD }}
+
+    - name: Pull most recent image
+      run: docker pull doxblek/fancy-spirits-webpage-api:latest
+      
+    - name: Create Version Tag
+      run: echo "TAG=$(date +%s)" >> $GITHUB_ENV
+
+    - name: Build the Docker image (DB)
+      run: |
+        cd api
+        docker build . --file Dockerfile --tag doxblek/fancy-spirits-webpage-api:$TAG --tag doxblek/fancy-spirits-webpage-api:latest
+        
+    - name: Push the Docker Image 
+      run: |
+        docker push doxblek/fancy-spirits-webpage-api:$TAG
+        docker push doxblek/fancy-spirits-webpage-api:latest
 
   deploy:
-    needs: [build-web, build-db]
+    needs: [build-web, build-db, build-api]
     runs-on: ubuntu-latest
     
     steps:
@@ -87,6 +114,15 @@ jobs:
         pass: ${{ secrets.SSH_USER_PWD }}
         script: |
           ([ ! -z "$(docker ps -a | grep fancy-spirits-webpage-db)" ] && (docker stop fancy-spirits-webpage-db && echo "Stopped existing container") || echo "No existing container...")
+
+    - name: Stop old container (api)
+      uses: cross-the-world/ssh-pipeline@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        user: ${{ secrets.SSH_USER }}
+        pass: ${{ secrets.SSH_USER_PWD }}
+        script: |
+          ([ ! -z "$(docker ps -a | grep fancy-spirits-webpage-api)" ] && (docker stop fancy-spirits-webpage-api && echo "Stopped existing container") || echo "No existing container...")
         
     - name: Pull and Run Docker Image via SSH (db)
       uses: cross-the-world/ssh-pipeline@master
@@ -101,6 +137,20 @@ jobs:
         script: |
           (docker pull doxblek/fancy-spirits-webpage-db:latest)
           (docker run --rm -d -it -p 5432:5432 --name fancy-spirits-webpage-db -e POSTGRES_PASSWORD="$POSTGRES_ADMIN_PASSWORD" doxblek/fancy-spirits-webpage-db)
+    
+    - name: Pull and Run Docker Image via SSH (api)
+      uses: cross-the-world/ssh-pipeline@master
+      env:
+        DB_USER: ${{ secrets.POSTGRES_FANCY_SPIRITS_USER }}
+        DB_PASSWORD: ${{ secrets.POSTGRES_FANCY_SPIRITS_PASSWORD }}
+        DB_NAME: fancy_spirits
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        user: ${{ secrets.SSH_USER }}
+        pass: ${{ secrets.SSH_USER_PWD }}
+        script: |
+          (docker pull doxblek/fancy-spirits-webpage-api:latest)
+          (docker run --rm -d -it -p 5000:5000 --name fancy-spirits-webpage-api doxblek/fancy-spirits-webpage-api)
 
     - name: Pull and Run Docker Image via SSH (webpage)
       uses: cross-the-world/ssh-pipeline@master
