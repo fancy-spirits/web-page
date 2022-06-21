@@ -8,6 +8,7 @@ services:
       - POSTGRES_ADMIN_PASSWORD
       - POSTGRES_FANCY_SPIRITS_USER
       - POSTGRES_FANCY_SPIRITS_PASSWORD
+      - POSTGRES_PASSWORD
     ports:
       - "5432:5432"
     volumes: 
