@@ -91,76 +91,6 @@ jobs:
       run: |
         docker push doxblek/fancy-spirits-webpage-api:$TAG
         docker push doxblek/fancy-spirits-webpage-api:latest
-
-  # deploy:
-    # needs: [build-web, build-db, build-api]
-    # runs-on: ubuntu-latest
-    
-    # steps:
-    # - name: Stop old container (webpage)
-    #   uses: cross-the-world/ssh-pipeline@master
-    #   with:
-    #     host: ${{ secrets.SSH_HOST }}
-    #     user: ${{ secrets.SSH_USER }}
-    #     pass: ${{ secrets.SSH_USER_PWD }}
-    #     script: |
-    #       ([ ! -z "$(docker ps -a | grep fancy-spirits-webpage)" ] && (docker stop fancy-spirits-webpage && echo "Stopped existing container") || echo "No existing container...")
-    
-    # - name: Stop old container (db)
-    #   uses: cross-the-world/ssh-pipeline@master
-    #   with:
-    #     host: ${{ secrets.SSH_HOST }}
-    #     user: ${{ secrets.SSH_USER }}
-    #     pass: ${{ secrets.SSH_USER_PWD }}
-    #     script: |
-    #       ([ ! -z "$(docker ps -a | grep fancy-spirits-webpage-db)" ] && (docker stop fancy-spirits-webpage-db && echo "Stopped existing container") || echo "No existing container...")
-
-    # - name: Stop old container (api)
-    #   uses: cross-the-world/ssh-pipeline@master
-    #   with:
-    #     host: ${{ secrets.SSH_HOST }}
-    #     user: ${{ secrets.SSH_USER }}
-    #     pass: ${{ secrets.SSH_USER_PWD }}
-    #     script: |
-    #       ([ ! -z "$(docker ps -a | grep fancy-spirits-webpage-api)" ] && (docker stop fancy-spirits-webpage-api && echo "Stopped existing container") || echo "No existing container...")
-        
-    # - name: Pull and Run Docker Image via SSH (db)
-    #   uses: cross-the-world/ssh-pipeline@master
-    #   env:
-    #     POSTGRES_FANCY_SPIRITS_USER: ${{ secrets.POSTGRES_FANCY_SPIRITS_USER }}
-    #     POSTGRES_FANCY_SPIRITS_PASSWORD: ${{ secrets.POSTGRES_FANCY_SPIRITS_PASSWORD }}
-    #     POSTGRES_ADMIN_PASSWORD: ${{ secrets.POSTGRES_ADMIN_PASSWORD }}
-    #   with:
-    #     host: ${{ secrets.SSH_HOST }}
-    #     user: ${{ secrets.SSH_USER }}
-    #     pass: ${{ secrets.SSH_USER_PWD }}
-    #     script: |
-    #       (docker pull doxblek/fancy-spirits-webpage-db:latest)
-    #       (docker run --rm -d -it -p 5432:5432 --name fancy-spirits-webpage-db -e POSTGRES_PASSWORD="$POSTGRES_ADMIN_PASSWORD" doxblek/fancy-spirits-webpage-db)
-    
-    # - name: Pull and Run Docker Image via SSH (api)
-    #   uses: cross-the-world/ssh-pipeline@master
-    #   env:
-    #     DB_USER: ${{ secrets.POSTGRES_FANCY_SPIRITS_USER }}
-    #     DB_PASSWORD: ${{ secrets.POSTGRES_FANCY_SPIRITS_PASSWORD }}
-    #     DB_NAME: fancy_spirits
-    #   with:
-    #     host: ${{ secrets.SSH_HOST }}
-    #     user: ${{ secrets.SSH_USER }}
-    #     pass: ${{ secrets.SSH_USER_PWD }}
-    #     script: |
-    #       (docker pull doxblek/fancy-spirits-webpage-api:latest)
-    #       (docker run --rm -d -it -p 5000:5000 --name fancy-spirits-webpage-api doxblek/fancy-spirits-webpage-api)
-
-    # - name: Pull and Run Docker Image via SSH (webpage)
-      # uses: cross-the-world/ssh-pipeline@master
-      # with:
-      #   host: ${{ secrets.SSH_HOST }}
-      #   user: ${{ secrets.SSH_USER }}
-      #   pass: ${{ secrets.SSH_USER_PWD }}
-      #   script: |
-      #     (docker pull doxblek/fancy-spirits-webpage:latest)
-      #     (docker run --rm -d -it -p 80:80 --name fancy-spirits-webpage doxblek/fancy-spirits-webpage)
         
   deploy:
     needs:
@@ -217,4 +147,4 @@ jobs:
             docker compose stop
             docker compose rm -f
             docker compose pull
-            POSTGRES_DB_NAME=$POSTGRES_DB_NAME POSTGRES_ADMIN_USER=$POSTGRES_ADMIN_USER POSTGRES_ADMIN_PASSWORD=$POSTGRES_ADMIN_PASSWORD POSTGRES_PASSWORD=$POSTGRES_ADMIN_PASSWORD POSTGRES_FANCY_SPIRITS_USER=$POSTGRES_FANCY_SPIRITS_USER POSTGRES_FANCY_SPIRITS_PASSWORD=$POSTGRES_FANCY_SPIRITS_PASSWORD docker compose up -d
+            POSTGRES_DB=$POSTGRES_DB_NAME POSTGRES_DB_NAME=$POSTGRES_DB_NAME POSTGRES_ADMIN_USER=$POSTGRES_ADMIN_USER POSTGRES_USER=$POSTGRES_ADMIN_USER POSTGRES_ADMIN_PASSWORD=$POSTGRES_ADMIN_PASSWORD POSTGRES_PASSWORD=$POSTGRES_ADMIN_PASSWORD POSTGRES_FANCY_SPIRITS_USER=$POSTGRES_FANCY_SPIRITS_USER POSTGRES_FANCY_SPIRITS_PASSWORD=$POSTGRES_FANCY_SPIRITS_PASSWORD docker compose up -d
