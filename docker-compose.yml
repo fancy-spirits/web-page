@@ -18,6 +18,7 @@ services:
   api:
     container_name: api
     image: doxblek/fancy-spirits-webpage-api
+    restart: on-failure
     environment:
       - POSTGRES_DB_NAME
       - POSTGRES_FANCY_SPIRITS_USER

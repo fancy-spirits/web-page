@@ -3,10 +3,12 @@ import { Pool, Client } from "pg";
 const pool = new Pool({
     host: "postgres",
     port: 5432,
-    database: process.env.DB_NAME,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD
+    database: process.env.POSTGRES_DB_NAME,
+    user: process.env.POSTGRES_FANCY_SPIRITS_USER,
+    password: process.env.POSTGRES_FANCY_SPIRITS_PASSWORD
 });
+
+console.log(`database: ${process.env.POSTGRES_DB_NAME}, username: ${process.env.POSTGRES_FANCY_SPIRITS_USER}, password: ${process.env.POSTGRES_FANCY_SPIRITS_PASSWORD}`)
 
 const query = (text: string, params: any) => pool.query(text, params);
 
