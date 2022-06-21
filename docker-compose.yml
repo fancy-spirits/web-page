@@ -3,11 +3,11 @@ services:
     container_name: postgres
     image: doxblek/fancy-spirits-webpage-db
     environment:
-      - POSTGRES_ADMIN_USER=${POSTGRES_ADMIN_USER}
-      - POSTGRES_ADMIN_PASSWORD=${POSTGRES_ADMIN_PASSWORD}
-      - POSTGRES_FANCY_SPIRITS_USER=${POSTGRES_FANCY_SPIRITS_USER}
-      - POSTGRES_FANCY_SPIRITS_PASSWORD=${POSTGRES_FANCY_SPIRITS_PASSWORD}
-      - POSTGRES_DB=${POSTGRES_DB_NAME}
+      - POSTGRES_ADMIN_USER
+      - POSTGRES_ADMIN_PASSWORD
+      - POSTGRES_FANCY_SPIRITS_USER
+      - POSTGRES_FANCY_SPIRITS_PASSWORD
+      - POSTGRES_DB="${POSTGRES_DB_NAME}""
     ports:
       - "5432:5432"
     volumes: 
@@ -16,9 +16,9 @@ services:
     container_name: api
     image: doxblek/fancy-spirits-webpage-api
     environment:
-      DB_NAME: ${POSTGRES_DB_NAME}
-      DB_USER: ${POSTGRES_FANCY_SPIRITS_USER}
-      DB_PASSWORD: ${POSTGRES_FANCY_SPIRITS_PASSWORD}
+      DB_NAME: "${POSTGRES_DB_NAME}"
+      DB_USER: "${POSTGRES_FANCY_SPIRITS_USER}"
+      DB_PASSWORD: "${POSTGRES_FANCY_SPIRITS_PASSWORD}"
     depends_on:
       - postgres
     ports:
