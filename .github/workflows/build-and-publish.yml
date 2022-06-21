@@ -229,4 +229,4 @@ jobs:
             docker compose stop
             docker compose rm -f
             docker compose pull
-            docker compose up -d
+            POSTGRES_PASSWORD=$POSTGRES_ADMIN_PASSWORD docker compose up -d
