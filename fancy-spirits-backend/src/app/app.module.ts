@@ -5,7 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NavigationPaneComponent } from './navigation-pane/navigation-pane.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { AddArtistModalComponent } from './add-artist-modal/add-artist-modal.component';
+import { HttpClientModule } from "@angular/common/http";
 
 @NgModule({
   declarations: [
@@ -15,7 +15,8 @@ import { AddArtistModalComponent } from './add-artist-modal/add-artist-modal.com
   imports: [
     BrowserModule,
     AppRoutingModule,
-    FontAwesomeModule
+    FontAwesomeModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,5 +1,6 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { Artist } from '../model/artist';
+import { Artist } from '../entities';
 
 @Component({
   selector: 'app-artist-page',
@@ -8,40 +9,23 @@ import { Artist } from '../model/artist';
 })
 export class ArtistPageComponent implements OnInit {
 
-  artists: Artist[] = [{
-    biography: "Lorem ipsum bla bla bla",
-    id: "123",
-    name: "doxbleK",
-    picture: new Blob()
-  },
-  {
-    biography: "Lorem ipsum bla bla bla",
-    id: "123",
-    name: "doxbleK",
-    picture: new Blob()
-  },
-  {
-    biography: "Lorem ipsum bla bla bla",
-    id: "123",
-    name: "doxbleK",
-    picture: new Blob()
-  },
-  {
-    biography: "Lorem ipsum bla bla bla",
-    id: "123",
-    name: "doxbleK",
-    picture: new Blob()
-  }];
+  artists: Artist[] = [];
 
   addArtistModalVisible = false;
 
-  constructor() { }
+  constructor(private httpClient: HttpClient) { }
 
   ngOnInit(): void {
+    this.loadArtists();
   }
 
   onNewArtist(){
     this.addArtistModalVisible = true;
+  }
+
+  loadArtists = () => {
+    this.httpClient.get("http://api:5000/artists", {observe: "body"}, )
+      .subscribe((body) => this.artists = body as Artist[]);
   }
 
 }
