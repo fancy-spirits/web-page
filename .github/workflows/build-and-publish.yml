@@ -197,6 +197,7 @@ jobs:
             rm -rf ./*
             git clone https://github.com/fancy-spirits/web-page.git
             mv web-page/* .
+            cat ./database/1-init-users.sh
 
       - name: Run new deployment
         uses: cross-the-world/ssh-pipeline@master
