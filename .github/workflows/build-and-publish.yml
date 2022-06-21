@@ -171,9 +171,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Clone Repository
-        uses: actions/checkout@v2
-
       - name: Stop old deployment
         continue-on-error: true
         uses: cross-the-world/ssh-pipeline@master
@@ -187,16 +184,6 @@ jobs:
             cd $DEPLOY_DIR
             docker compose down 
 
-      # - name: Transfer new docker-compose.yml
-      #   uses: easingthemes/ssh-deploy@main
-      #   env:
-      #     SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-      #     REMOTE_HOST: ${{ secrets.SSH_HOST }}
-      #     REMOTE_USER: ${{ secrets.SSH_USER }}
-      #     EXCLUDE: "api, database, fancy-spirits-backend, fancy-spirits/webpage"
-      #     TARGET: ${{ secrets.SSH_TARGET_DIR }} 
-      #     ARGS: "-v"
-
       - name: Transfer new docker-compose.yml
         uses: cross-the-world/ssh-pipeline@master
         env:
@@ -207,7 +194,7 @@ jobs:
           pass: ${{ secrets.SSH_USER_PWD }}
           script: |
             cd $DEPLOY_DIR
-            rm -rf web-page
+            rm -rf ./*
             git clone https://github.com/fancy-spirits/web-page.git
             mv web-page/* .
 
