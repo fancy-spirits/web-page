@@ -115,3 +115,4 @@ SELECT id, platform, link, platform_type FROM social_link
 WHERE artist = 
 	(SELECT SINGLE id FROM artists WHERE name = $1)
 $body$
+LANGUAGE SQL;
