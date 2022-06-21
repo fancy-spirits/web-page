@@ -1,6 +1,9 @@
 import express from "express";
 import morgan from "morgan";
-import { getAllArtists, getArtist, getArtistReleases, getReleases } from "./pg";
+import get from "./routes/get";
+import patch from "./routes/patch";
+import post from "./routes/post";
+import {default as deleteRoutes} from "./routes/delete";
 const app = express();
 const PORT = process.env.PORT ?? 4000;
 
@@ -8,34 +11,13 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(morgan("combined"));
 
-app.get("/artists", async (req, res) => {
-    const artists = await getAllArtists();
-    res.json(artists);
-});
-
-app.get("/artists/:name", async (req, res) => {
-    const { name } = req.params;
-    const artist = await getArtist(name);
-    if (!artist) {
-        res.status(404).send();
-    } else {
-        res.json(artist);
-    }
-});
-
-app.get("/artists/:name/releases", async (req, res) => {
-    const { name } = req.params;
-    const releases = await getArtistReleases(name);
-    if (!releases) {
-        res.status(404).send();
-    } else {
-        res.json(releases);
-    }
-});
-
-app.get("/releases", async (req, res) => {
-    const releases = await getReleases();
-    res.json(releases);
-});
+// Add GET-Endpoints
+Object.entries(get).forEach(route => app.get(route[0], route[1]));
+// ADD POST-Endpoints
+Object.entries(post).forEach(route => app.post(route[0], route[1]));
+// ADD PATCH-Endpoints
+Object.entries(patch).forEach(route => app.patch(route[0], route[1]));
+// ADD DELETE-Endpoints
+Object.entries(deleteRoutes).forEach(route => app.delete(route[0], route[1]));
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

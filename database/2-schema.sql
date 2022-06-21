@@ -106,3 +106,12 @@ ALTER TABLE "release_contribution" ADD CONSTRAINT "release_contribution_fk1" FOR
 ALTER TABLE "streaming_link" ADD CONSTRAINT "streaming_link_fk0" FOREIGN KEY ("release") REFERENCES "releases"("id");
 
 ALTER TABLE "social_link" ADD CONSTRAINT "social_link_fk0" FOREIGN KEY ("artist") REFERENCES "artists"("id");
+
+CREATE OR REPLACE FUNCTION artist_social_links(artist_name text)
+	RETURNS TABLE (platform text, link text, platform_type text)
+AS
+$body$
+SELECT id, platform, link, platform_type FROM social_link 
+WHERE artist = 
+	(SELECT SINGLE id FROM artists WHERE name = $1)
+$body$
