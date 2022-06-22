@@ -1,9 +1,14 @@
-import { Artist, Release, SocialLink } from "../entities";
+import { Artist, Release, SocialLink, User } from "../entities";
 import { queryMultiple, querySingle } from "../pg";
 
 export async function createArtist(artist: Artist) {
-    const insertStatement = `INSERT INTO artists (name, picture, biography) VALUES ($1, $2, $3)`;
-    const created: Artist = await (await querySingle(insertStatement, [artist.name, artist.picture, artist.biography])).rows[0];
+    const artistUser = await createArtistUser({
+        privateMail: "",
+        pwd_hash: "",
+        salt: ""
+    });
+    const insertStatement = `INSERT INTO artists (name, picture, biography, user) VALUES ($1, $2, $3, $4)`;
+    const created: Artist = await (await querySingle(insertStatement, [artist.name, artist.picture, artist.biography, artistUser.id!])).rows[0];
     return created;
 }
 
@@ -27,4 +32,11 @@ export async function createSocialLinks(socialLinks: SocialLink[], artist: Artis
     ]);
 
     return results.map(result => result.rows[0] as SocialLink);
+}
+
+export async function createArtistUser(user: User) {
+    const insertStatementUser = `INSERT INTO users (private_mail, pwd_hash, salt, role) VALUES ($1, $2, $3, $4)`;
+    const userResult = await querySingle(insertStatementUser, [user.privateMail, user.pwd_hash, user.salt, "artist"]);
+    const createdUser: User = userResult.rows[0];
+    return createdUser;
 }

@@ -24,6 +24,14 @@ export interface Release {
     description: string;
 };
 
+export interface User {
+    id?: string;
+    privateMail: string;
+    pwd_hash: string;
+    salt: string;
+    // role: string;
+}
+
 export interface ReleaseItem {
 
 }
