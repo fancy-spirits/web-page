@@ -1,4 +1,3 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -12,7 +11,7 @@ export class ImgUploaderComponent implements OnInit {
   requiredFileType: string = "image/png, image/jpg";
   fileUploaded = false;
 
-  constructor(private httpClient: HttpClient) {
+  constructor() {
   }
 
   ngOnInit(): void {
@@ -22,9 +21,9 @@ export class ImgUploaderComponent implements OnInit {
     if (event.target.files && event.target.files[0]) {
       const reader = new FileReader();
 
-      reader.readAsDataURL(event.target.files[0]); // read file as data url
+      reader.readAsDataURL(event.target.files[0]); 
 
-      reader.onload = (event) => { // called once readAsDataURL is completed
+      reader.onload = (event) => { 
         this.fileContent = event.target?.result as string | undefined;
         this.fileUploaded = true;
       }

@@ -1,5 +1,5 @@
 
-type Base64String = string;
+export type Base64String = string;
 
 export interface Artist {
     id?: string;
