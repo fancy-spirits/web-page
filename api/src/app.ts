@@ -1,5 +1,6 @@
 import express from "express";
 import morgan from "morgan";
+import cors from "cors";
 import get from "./routes/get";
 import patch from "./routes/patch";
 import post from "./routes/post";
@@ -9,6 +10,7 @@ const PORT = process.env.PORT ?? 4000;
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
+app.use(cors());
 app.use(morgan("combined"));
 
 // Add GET-Endpoints
