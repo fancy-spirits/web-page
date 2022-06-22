@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 
 @Component({
   selector: 'app-img-uploader',
@@ -10,6 +10,10 @@ export class ImgUploaderComponent implements OnInit {
   fileContent?: string = undefined;
   requiredFileType: string = "image/png, image/jpg";
   fileUploaded = false;
+
+  @Output("change")
+  onChange = new  EventEmitter<string>(); 
+  // onChange?: (picture: string) => void; 
 
   constructor() {
   }
@@ -26,6 +30,7 @@ export class ImgUploaderComponent implements OnInit {
       reader.onload = (event) => { 
         this.fileContent = event.target?.result as string | undefined;
         this.fileUploaded = true;
+        this.onChange?.emit(this.fileContent as string);
       }
     }
 }

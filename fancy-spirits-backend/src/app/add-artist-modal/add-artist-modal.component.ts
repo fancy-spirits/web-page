@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { APIConnectorService } from '../apiconnector.service';
 import { Artist, Base64String } from '../entities';
 
@@ -20,7 +20,7 @@ export class AddArtistModalComponent implements OnInit {
     this.visible = !this.visible;
   }
 
-  onSave() {
+  onSave = () => {
     this.httpClient.post(this.api.generateURL("/artists"), {
       biography: this.biography,
       name: this.artistName,
@@ -29,7 +29,6 @@ export class AddArtistModalComponent implements OnInit {
     } as Artist, {
       observe: "response"
     }).subscribe(response => {
-      console.log(response);
       this.toggleVisible();
     })
   }
@@ -37,6 +36,18 @@ export class AddArtistModalComponent implements OnInit {
   constructor(private httpClient: HttpClient, private api: APIConnectorService) { }
 
   ngOnInit(): void {
+  }
+
+  onNameChanged(event: any) {
+    this.artistName = event.target.value;
+  }
+
+  onBiographyChanged(event: any) {
+    this.biography = event.target.value;
+  }
+
+  onPictureChanged(picture: string) {
+    this.pictureFile = picture;
   }
 
 }

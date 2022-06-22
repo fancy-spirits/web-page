@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { APIConnectorService } from '../apiconnector.service';
 import { Artist } from '../entities';
 
 @Component({
@@ -13,7 +14,7 @@ export class ArtistPageComponent implements OnInit {
 
   addArtistModalVisible = false;
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient, private api: APIConnectorService) { }
 
   ngOnInit(): void {
     this.loadArtists();
@@ -24,7 +25,7 @@ export class ArtistPageComponent implements OnInit {
   }
 
   loadArtists = () => {
-    this.httpClient.get("http://api:5000/artists", {observe: "body"}, )
+    this.httpClient.get(this.api.generateURL("/artists"), {observe: "body"}, )
       .subscribe((body) => this.artists = body as Artist[]);
   }
 
