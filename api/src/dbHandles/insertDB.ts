@@ -3,9 +3,9 @@ import { queryMultiple, querySingle } from "../pg";
 
 export async function createArtist(artist: Artist) {
     const artistUser = await createArtistUser({
-        privateMail: "",
-        pwd_hash: "",
-        salt: ""
+        privateMail: "x",
+        pwd_hash: "x",
+        salt: "x"
     });
     const insertStatement = `INSERT INTO artists (name, picture, biography, user) VALUES ($1, $2, $3, $4)`;
     const created: Artist = await (await querySingle(insertStatement, [artist.name, artist.picture, artist.biography, artistUser.id!])).rows[0];
