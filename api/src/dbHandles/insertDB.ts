@@ -3,7 +3,7 @@ import { queryMultiple, querySingle } from "../pg";
 
 export async function createArtist(artist: Artist) {
     const artistUser = await createArtistUser({
-        privateMail: "x",
+        privateMail: `${artist.name}:${Date.now()}`,
         pwd_hash: "x",
         salt: "x"
     });
