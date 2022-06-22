@@ -4,7 +4,7 @@ CREATE TABLE "artists" (
 	"id" uuid NOT NULL DEFAULT uuid_generate_v4(),
 	"name" TEXT NOT NULL UNIQUE,
 	"picture" TEXT NOT NULL,
-	"biography" serial NOT NULL,
+	"biography" TEXT NOT NULL,
 	"user" uuid NOT NULL,
 	CONSTRAINT "artists_pk" PRIMARY KEY ("id")
 ) WITH (

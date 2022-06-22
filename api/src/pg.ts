@@ -8,7 +8,7 @@ const pool = new Pool({
     password: process.env.POSTGRES_FANCY_SPIRITS_PASSWORD
 });
 
-console.log(`database: ${process.env.POSTGRES_DB_NAME}, username: ${process.env.POSTGRES_FANCY_SPIRITS_USER}, password: ${process.env.POSTGRES_FANCY_SPIRITS_PASSWORD}`)
+console.log(`Successfully logged into ${process.env.POSTGRES_DB_NAME} with the user: ${process.env.POSTGRES_FANCY_SPIRITS_USER}`);
 
 export const querySingle = (text: string, params: Array<any>) => pool.query(text, params);
 
