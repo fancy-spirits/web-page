@@ -13,7 +13,7 @@ export async function createArtist(artist: Artist) {
 }
 
 export async function createRelease(release: Release, artists: Artist[]) {
-    const insertStatementRelease = `INSERT INTO releases (name, release_date, release_type, artwork, description) VALUES ('$1', '$2', '$3', '$4')`;
+    const insertStatementRelease = `INSERT INTO releases (name, release_date, release_type, artwork, description) VALUES ('$1', '$2', '$3', '$4', '$5')`;
     const insertStatementReleaseContribution = `INSERT INTO release_contribution (artist, release) VALUES ('$1', '$2')`;
     const result = await querySingle(insertStatementRelease, [release.name, release.release_date, release.release_type, release.artwork, release.description]);
     const createdRelease = result.rows[0];
