@@ -15,12 +15,31 @@
       </div>
       <!-- body -->
       <div class="body">
-        <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam voluptatum 
-            voluptate, maxime ducimus totam a unde quia facilis quod doloremque, 
-            reprehenderit dignissimos animi laborum adipisci cumque laboriosam dolorem. 
-            Consequatur, quibusdam!
-        </p>
+
+        <div class="grid">
+          <div class="infoSection">
+            <h1 class="formHeader">Artist Information</h1>
+            <div class="input-element">
+              <label for="artist-name">Name: </label>
+              <input type="text" name="artist-name" [textContent]="artistName">
+            </div>
+    
+            <div class="input-element">
+              <label for="biography">Biography: </label>
+              <textarea name="biography" [textContent]="biography"></textarea>
+            </div>
+          </div>
+          <div class="imageSection">
+            <h1 class="formHeader">Image</h1>
+            <app-img-uploader class="inputElement"></app-img-uploader>
+          </div>
+          <div class="socialSection">
+            <h1 class="formHeader">Social Media Links</h1>
+            <p>Bla bla bla</p>
+          </div>
+        </div>
+        
+
       </div>
       <!--footer-->
       <div class="footer">

@@ -9,6 +9,10 @@ export class AddArtistModalComponent implements OnInit {
   @Input()
   visible = false;
 
+  artistName: string = "";
+  biography: string = "";
+  pictureFile: string = "";
+
   toggleVisible(){
     this.visible = !this.visible;
   }

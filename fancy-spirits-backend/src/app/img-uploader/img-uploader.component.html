@@ -1,0 +1,13 @@
+<input type="file" class="file-input"
+       (change)="onFileSelected($event)" 
+       [accept]="requiredFileType" #fileUpload>
+
+<div class="file-upload">
+    <div class="button"
+      (click)="fileUpload.click()">
+        <p *ngIf="!fileUploaded">No image</p>
+        <div class="image" *ngIf="!!fileUploaded">
+            <img [src]="fileContent">
+        </div>
+    </div>
+</div>
