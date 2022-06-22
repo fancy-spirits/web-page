@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { getAllArtists, getArtist, getArtistReleases, getArtistSocialLinks, getRelease, getReleases } from "../dbHandles/readDB";
+import { getAllArtists, getArtist, getArtistReleases, getArtistSocialLinks, getRelease, getReleases, getUsers } from "../dbHandles/readDB";
 
 export default {
     "/artists": async (req, res) => {
@@ -33,7 +33,7 @@ export default {
         const releases = await getReleases();
         res.json(releases);
     },
-    "release/:id": async (req, res) => {
+    "/releases/:id": async (req, res) => {
         const { id } = req.params;
         const release = await getRelease(id);
         if (!release) {
@@ -41,6 +41,10 @@ export default {
         } else {
             res.json(release);
         }
+    },
+    "/users": async (req, res) => {
+        const users = await getUsers();
+        res.json(users);
     }
 } as {
     [route: string]: (req: Request, res: Response) => Promise<any>

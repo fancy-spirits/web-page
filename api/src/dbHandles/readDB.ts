@@ -1,4 +1,4 @@
-import { Artist, Release, SocialLink } from "../entities";
+import { Artist, Release, SocialLink, User } from "../entities";
 import { querySingle } from "../pg";
 
 export async function getAllArtists() {
@@ -71,4 +71,11 @@ export async function getRelease(id: string) {
     const releaseResult = await querySingle(queryStringReleases, [id]);
 
     return releaseResult.rows[0] as Release;
+}
+
+export async function getUsers() {
+    const queryStringUsers = `SELECT * FROM users`;
+    const userResults = await querySingle(queryStringUsers, []);
+
+    return userResults.rows.map(user => user as User);
 }
