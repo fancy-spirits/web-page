@@ -14,7 +14,7 @@ export async function updateArtist(artist: Partial<Artist>, name: string) {
         // ...{socialLinks: artist.socialLinks ?? existingArtist.socialLinks},
     };
     const updateStatementArtist = `UPDATE artists SET biography = $1, name = $2, picture = $3 WHERE name = $4`;
-    const updatedArtistResult = await db.querySingle(updateStatementArtist, [updatedArtist.biography, updatedArtist.name, updatedArtist.picture, name]); 
+    const updatedArtistResult = await db.querySingle(updateStatementArtist, [updatedArtist.biography, updatedArtist.name, Buffer.from(updatedArtist.picture), name]); 
     return updatedArtistResult.rows[0] as Artist;
 }
 
@@ -30,7 +30,7 @@ export async function updateRelease(release: Partial<Release>, id: string) {
         ...{release_type: release.release_type ?? existingRelease.release_type}
     };
     const updateStatementRelease = `UPDATE releases SET name = $1, description = $2, artwork = $3, release_date = $4, release_type = $5 WHERE id = $6`;
-    const updatedReleaseResult = await db.querySingle(updateStatementRelease, [updatedRelease.name, updatedRelease.description, updatedRelease.artwork, updatedRelease.release_date, updatedRelease.release_type]);
+    const updatedReleaseResult = await db.querySingle(updateStatementRelease, [updatedRelease.name, updatedRelease.description, Buffer.from(updatedRelease.artwork), updatedRelease.release_date, updatedRelease.release_type]);
     return updatedReleaseResult.rows[0] as Release;
 }
 

@@ -10,14 +10,14 @@ export async function createArtist(artist: Artist) {
         salt: "x"
     });
     const insertStatement = `INSERT INTO artists (name, picture, biography, user) VALUES ($1, $2, $3, $4) RETURNING *`;
-    const created: Artist = await (await db.querySingle(insertStatement, [artist.name, artist.picture, artist.biography, artistUser.id!])).rows[0];
+    const created: Artist = await (await db.querySingle(insertStatement, [artist.name, Buffer.from(artist.picture), artist.biography, artistUser.id!])).rows[0];
     return created;
 }
 
 export async function createRelease(release: Release, artists: Artist[]) {
     const insertStatementRelease = `INSERT INTO releases (name, release_date, release_type, artwork, description) VALUES ($1, $2, $3, $4, $5) RETURNING *`;
     const insertStatementReleaseContribution = `INSERT INTO release_contribution (artist, release) VALUES ($1, $2) RETURNING *`;
-    const result = await db.querySingle(insertStatementRelease, [release.name, release.release_date, release.release_type, release.artwork, release.description]);
+    const result = await db.querySingle(insertStatementRelease, [release.name, release.release_date, release.release_type, Buffer.from(release.artwork), release.description]);
     const createdRelease = result.rows[0];
     const queries: [text: string, params: any[]][] = artists.map(artist => [insertStatementReleaseContribution, [artist["id"], createdRelease["_id"]]]);
     await db.queryMultiple([
