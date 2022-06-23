@@ -29,7 +29,7 @@ export class ImgUploaderComponent implements OnInit {
       reader.onload = (event) => { 
         this.fileContent = event.target?.result as string | undefined;
         this.fileUploaded = true;
-        const decodedString = window.atob(this.fileContent as string);
+        const decodedString = window.atob(this.fileContent?.split(",")[1] as string);
         const buffer = new Uint8Array(decodedString.length);
         for (let i = 0; i < decodedString.length; i++) {
           buffer[i] = decodedString.charCodeAt(i);
