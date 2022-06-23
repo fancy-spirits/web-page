@@ -8,7 +8,6 @@ import { getArtist } from "../dbHandles/readDB";
 export default {
     "/artists": async (req, res) => {
         const artist = req.body;
-        console.log(req.body);
         
         if (!isArtist(artist)) {
             res.status(400).send("Invalid artist");

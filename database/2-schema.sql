@@ -3,7 +3,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE TABLE "artists" (
 	"id" uuid NOT NULL DEFAULT uuid_generate_v4(),
 	"name" TEXT NOT NULL UNIQUE,
-	"picture" TEXT NOT NULL,
+	"picture" bytea NOT NULL,
 	"biography" TEXT NOT NULL,
 	"user" uuid NOT NULL,
 	CONSTRAINT "artists_pk" PRIMARY KEY ("id")
@@ -18,7 +18,7 @@ CREATE TABLE "releases" (
 	"name" TEXT NOT NULL,
 	"release_date" DATE NOT NULL,
 	"release_type" TEXT NOT NULL,
-	"artwork" TEXT NOT NULL,
+	"artwork" bytea NOT NULL,
 	"description" TEXT,
 	CONSTRAINT "releases_pk" PRIMARY KEY ("id")
 ) WITH (

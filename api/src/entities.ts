@@ -3,7 +3,7 @@ type Base64String = string;
 export interface Artist {
     id?: string;
     name: string;
-    picture: Base64String;
+    picture: ArrayBuffer;
     biography: string;
     socialLinks: SocialLink[];
 };
@@ -20,7 +20,7 @@ export interface Release {
     name: string;
     release_date: Date;
     release_type: string;
-    artwork: Base64String;
+    artwork: ArrayBuffer;
     description: string;
 };
 

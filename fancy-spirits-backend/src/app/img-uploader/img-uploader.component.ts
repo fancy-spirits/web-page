@@ -12,8 +12,7 @@ export class ImgUploaderComponent implements OnInit {
   fileUploaded = false;
 
   @Output("change")
-  onChange = new  EventEmitter<string>(); 
-  // onChange?: (picture: string) => void; 
+  onChange = new  EventEmitter<ArrayBuffer>();
 
   constructor() {
   }
@@ -30,7 +29,12 @@ export class ImgUploaderComponent implements OnInit {
       reader.onload = (event) => { 
         this.fileContent = event.target?.result as string | undefined;
         this.fileUploaded = true;
-        this.onChange?.emit(this.fileContent as string);
+        const decodedString = window.atob(this.fileContent as string);
+        const buffer = new Uint8Array(decodedString.length);
+        for (let i = 0; i < decodedString.length; i++) {
+          buffer[i] = decodedString.charCodeAt(i);
+        }
+        this.onChange?.emit(buffer);
       }
     }
 }

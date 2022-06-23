@@ -14,7 +14,7 @@ export class AddArtistModalComponent implements OnInit {
 
   artistName: string = "";
   biography: string = "";
-  pictureFile: Base64String = "";
+  pictureFile?: ArrayBuffer;
 
   toggleVisible(){
     this.visible = !this.visible;
@@ -46,7 +46,7 @@ export class AddArtistModalComponent implements OnInit {
     this.biography = event.target.value;
   }
 
-  onPictureChanged(picture: string) {
+  onPictureChanged(picture: ArrayBuffer) {
     this.pictureFile = picture;
   }
 
