@@ -1,7 +1,7 @@
 import { Artist, Release, SocialLink, User } from "../entities";
-import db from "../pg";
+import { db } from "../pg";
 
-const { queryMultiple, querySingle } = db();
+const { querySingle } = db();
 
 export async function getAllArtists() {
     const queryString = `SELECT id, name, picture, biography FROM artists ORDER BY name ASC`;

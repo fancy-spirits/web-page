@@ -1,7 +1,7 @@
 import { Artist, Release, SocialLink } from "../entities";
-import db from "../pg";
+import { db } from "../pg";
 
-const { queryMultiple, querySingle } = db();
+const { querySingle } = db();
 
 export async function updateArtist(artist: Partial<Artist>, name: string) {
     const queryStatementArtist = `SELECT FROM artists WHERE name = $1`;

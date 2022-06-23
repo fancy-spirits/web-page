@@ -2,7 +2,7 @@ import { Pool, QueryResult } from "pg";
 import { createGenre } from "./dbHandles/insertDB";
 
 let pool: Pool;
-export default function db() {
+export function db() {
     if (!pool) {
         pool = new Pool({
             host: "postgres",

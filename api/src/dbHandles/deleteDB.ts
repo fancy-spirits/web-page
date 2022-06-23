@@ -1,6 +1,6 @@
 import { Artist, Release } from "../entities";
 import { getArtist } from "./readDB";
-import db from "../pg";
+import { db } from "../pg";
 
 const { queryMultiple, querySingle } = db();
 

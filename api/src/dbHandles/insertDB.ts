@@ -1,5 +1,5 @@
 import { Artist, Genre, Release, SocialLink, User } from "../entities";
-import db from "../pg";
+import { db } from "../pg";
 
 const { queryMultiple, querySingle } = db();
 
