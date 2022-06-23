@@ -17,10 +17,12 @@ async function printPrivileges(){
     console.info("⏱ Current privileges: ", ...result.rows);
 }
 
-export const querySingle = (text: string, params: Array<any>) => {
+export const querySingle = async (text: string, params: Array<any>) => {
     try {
         console.info(`⏱ Performing SQL query '${text}' with arguments ${params}`);
-        return pool.query(text, params);
+        const result = await pool.query(text, params);
+        console.info(`✅ Query '${text}' finished successfully`);
+        return result;
     } catch (exception) {
         console.error(`⭕️ SQL-Query '${text}' with arguments ${params} failed: `, exception);
         return {
@@ -41,7 +43,9 @@ export const queryMultiple = async (queries: [text: string, params: Array<any>][
         const results = await Promise.all(queries.map(async ([text, params]) => {
             try {
                 console.info(`⏱ Performing SQL query '${text}' with arguments ${params}`);
-                return await client.query(text, params);
+                const result = await client.query(text, params);
+                console.info(`✅ Query '${text}' finished successfully`);
+                return result;
             } catch (exception) {
                 console.error(`⭕️ SQL-Query '${text}' with arguments ${params} failed: `, exception);
                 throw exception;
@@ -49,6 +53,7 @@ export const queryMultiple = async (queries: [text: string, params: Array<any>][
         }));
 
         await client.query("COMMIT");
+        console.info(`✅ ✅ Transaction finished successfully`);
 
         return results;
     } catch (e) {
