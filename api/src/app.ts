@@ -5,6 +5,11 @@ import get from "./routes/get";
 import patch from "./routes/patch";
 import post from "./routes/post";
 import {default as deleteRoutes} from "./routes/delete";
+
+// Init DB Connection
+import { DB } from "./pg";
+DB.getInstance();
+
 const app = express();
 const PORT = process.env.PORT ?? 4000;
 
