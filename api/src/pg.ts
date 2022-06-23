@@ -32,6 +32,7 @@ export const queryMultiple = async (queries: [text: string, params: Array<any>][
     
         const results = await Promise.all(queries.map(async ([text, params]) => {
             try {
+                console.info(`⏱ Performing SQL query '${text}' with arguments ${params}`);
                 return await client.query(text, params);
             } catch (exception) {
                 console.error(`⭕️ SQL-Query '${text}' with arguments ${params} failed: `, exception);
