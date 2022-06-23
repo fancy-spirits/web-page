@@ -1,4 +1,5 @@
 import { Pool, QueryResult } from "pg";
+import { createGenre } from "./dbHandles/insertDB";
 
 const pool = new Pool({
     host: "postgres",
@@ -61,3 +62,6 @@ export const queryMultiple = async (queries: [text: string, params: Array<any>][
 }
 
 printPrivileges();
+createGenre({
+    name: "Drum & Bass"
+});

@@ -1,4 +1,4 @@
-import { Artist, Release, SocialLink, User } from "../entities";
+import { Artist, Genre, Release, SocialLink, User } from "../entities";
 import { queryMultiple, querySingle } from "../pg";
 
 export async function createArtist(artist: Artist) {
@@ -34,11 +34,23 @@ export async function createSocialLinks(socialLinks: SocialLink[], artist: Artis
     return results.map(result => result.rows[0] as SocialLink);
 }
 
-export async function createArtistUser(user: User) {
+export async function createArtistUser(user: Partial<User>) {
+    if (!user.privateMail || !user.pwd_hash || !user.salt) {
+        throw "Invalid User";
+    }
     const insertStatementUser = `INSERT INTO users (private_mail, pwd_hash, salt, role) VALUES ($1, $2, $3, $4)`;
     const userResult = await querySingle(insertStatementUser, [user.privateMail, user.pwd_hash, user.salt, "artist"]);
     const createdUser: User = userResult.rows[0];
     console.log(userResult);
     
     return createdUser;
+}
+
+export async function createGenre(genre: Genre) {
+    const insertStatementGenre = `INSERT INTO genre (name) VALUES ($1)`;
+    const genreResult = await querySingle(insertStatementGenre, [genre.name]);
+    const createdGenre: Genre = genreResult.rows[0];
+    console.log(`Created artist ${createdGenre}`);
+
+    return createdGenre;
 }

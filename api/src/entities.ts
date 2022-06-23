@@ -29,7 +29,12 @@ export interface User {
     privateMail: string;
     pwd_hash: string;
     salt: string;
-    // role: string;
+    role: string;
+}
+
+export interface Genre {
+    id?: NamedCurve;
+    name: string;
 }
 
 export interface ReleaseItem {
