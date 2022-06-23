@@ -43,7 +43,6 @@ export async function createArtistUser(user: Partial<User>) {
     const insertStatementUser = `INSERT INTO users (private_mail, pwd_hash, salt, role) VALUES ($1, $2, $3, $4) RETURNING *`;
     const userResult = await db.querySingle(insertStatementUser, [user.privateMail, user.pwd_hash, user.salt, "artist"]);
     const createdUser: User = userResult.rows[0];
-    console.log(userResult);
     
     return createdUser;
 }
