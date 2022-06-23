@@ -35,6 +35,7 @@ export async function createSocialLinks(socialLinks: SocialLink[], artist: Artis
 }
 
 export async function createArtistUser(user: User) {
+    console.log("Still working");
     const insertStatementUser = `INSERT INTO users (private_mail, pwd_hash, salt, role) VALUES ('$1', '$2', '$3', '$4')`;
     const userResult = await querySingle(insertStatementUser, [user.privateMail, user.pwd_hash, user.salt, "artist"]);
     const createdUser: User = userResult.rows[0];
