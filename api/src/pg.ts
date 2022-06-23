@@ -12,6 +12,7 @@ console.log(`Successfully logged into ${process.env.POSTGRES_DB_NAME} with the u
 
 export const querySingle = (text: string, params: Array<any>) => {
     try {
+        console.info(`⏱ Performing SQL query '${text}' with arguments ${params}`);
         return pool.query(text, params);
     } catch (exception) {
         console.error(`⭕️ SQL-Query '${text}' with arguments ${params} failed: `, exception);
@@ -44,6 +45,8 @@ export const queryMultiple = async (queries: [text: string, params: Array<any>][
 
         return results;
     } catch (e) {
+        console.error(`⭕️ SQL-Transaction consisting of: ${queries.map(query => `${query[0]}(${query[1]}), `)}`);
+        console.error("⭕️ failed", e);
         await client.query("ROLLBACK");
         return [];
     } finally {
