@@ -18,9 +18,10 @@ async function printPrivileges(){
 }
 
 export const querySingle = async (text: string, params: Array<any>) => {
+    const client = await pool.connect();
     try {
         console.info(`⏱ Performing SQL query '${text}' with arguments ${params}`);
-        const result = await pool.query(text, params);
+        const result = await client.query(text, params);
         console.info(`✅ Query '${text}' finished successfully`);
         return result;
     } catch (exception) {
@@ -32,6 +33,8 @@ export const querySingle = async (text: string, params: Array<any>) => {
           fields: [],
           oid: -1
         } as QueryResult;
+    } finally {
+        client.release();
     }
 };
 
