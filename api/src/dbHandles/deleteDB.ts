@@ -1,6 +1,8 @@
 import { Artist, Release } from "../entities";
-import { queryMultiple, querySingle } from "../pg";
 import { getArtist } from "./readDB";
+import db from "../pg";
+
+const { queryMultiple, querySingle } = db();
 
 export async function deleteArtistSafe(name: string) {
     const artist: Artist = (await getArtist(name))!;

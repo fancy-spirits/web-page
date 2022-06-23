@@ -1,5 +1,7 @@
 import { Artist, Genre, Release, SocialLink, User } from "../entities";
-import { queryMultiple, querySingle } from "../pg";
+import db from "../pg";
+
+const { queryMultiple, querySingle } = db();
 
 export async function createArtist(artist: Artist) {
     const artistUser = await createArtistUser({

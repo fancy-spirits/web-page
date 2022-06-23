@@ -1,15 +1,29 @@
 import { Pool, QueryResult } from "pg";
 import { createGenre } from "./dbHandles/insertDB";
 
-const pool = new Pool({
-    host: "postgres",
-    port: 5432,
-    database: process.env.POSTGRES_DB_NAME,
-    user: process.env.POSTGRES_FANCY_SPIRITS_USER,
-    password: process.env.POSTGRES_FANCY_SPIRITS_PASSWORD
-});
+let pool: Pool;
+export default function db() {
+    if (!pool) {
+        pool = new Pool({
+            host: "postgres",
+            port: 5432,
+            database: process.env.POSTGRES_DB_NAME,
+            user: process.env.POSTGRES_FANCY_SPIRITS_USER,
+            password: process.env.POSTGRES_FANCY_SPIRITS_PASSWORD
+        });
 
-console.log(`Successfully logged into ${process.env.POSTGRES_DB_NAME} with the user: ${process.env.POSTGRES_FANCY_SPIRITS_USER}`);
+        console.log(`Successfully logged into ${process.env.POSTGRES_DB_NAME} with the user: ${process.env.POSTGRES_FANCY_SPIRITS_USER}`);
+
+        printPrivileges();
+        createGenre({
+            name: "Drum & Bass"
+        });
+    }
+    return {
+        querySingle,
+        queryMultiple
+    }
+}
 
 async function printPrivileges(){
     const query = `SELECT * FROM information_schema.role_table_grants;`
@@ -17,7 +31,7 @@ async function printPrivileges(){
     console.info("⏱ Current privileges: ", ...result.rows);
 }
 
-export const querySingle = async (text: string, params: Array<any>) => {
+const querySingle = async (text: string, params: Array<any>) => {
     const client = await pool.connect();
     try {
         console.info(`⏱ Performing SQL query '${text}' with arguments ${params}`);
@@ -38,7 +52,7 @@ export const querySingle = async (text: string, params: Array<any>) => {
     }
 };
 
-export const queryMultiple = async (queries: [text: string, params: Array<any>][]) => {
+const queryMultiple = async (queries: [text: string, params: Array<any>][]) => {
     const client = await pool.connect();
     try {
         await client.query("BEGIN");
@@ -68,8 +82,3 @@ export const queryMultiple = async (queries: [text: string, params: Array<any>][
         client.release();
     }
 }
-
-printPrivileges();
-createGenre({
-    name: "Drum & Bass"
-});
