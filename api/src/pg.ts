@@ -10,6 +10,12 @@ const pool = new Pool({
 
 console.log(`Successfully logged into ${process.env.POSTGRES_DB_NAME} with the user: ${process.env.POSTGRES_FANCY_SPIRITS_USER}`);
 
+async function printPrivileges(){
+    const query = `SELECT * FROM information_schema.role_table_grants;`
+    const result = await querySingle(query, []);
+    console.info("⏱ Current privileges: ", ...result.rows);
+}
+
 export const querySingle = (text: string, params: Array<any>) => {
     try {
         console.info(`⏱ Performing SQL query '${text}' with arguments ${params}`);
@@ -53,3 +59,5 @@ export const queryMultiple = async (queries: [text: string, params: Array<any>][
         client.release();
     }
 }
+
+printPrivileges();
