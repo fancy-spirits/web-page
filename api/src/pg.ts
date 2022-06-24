@@ -31,12 +31,12 @@ export class DB {
     querySingle = async (text: string, params: Array<any>) => {
         const client = await this.pool.connect();
         try {
-            console.info(`⏱ Performing SQL query '${text}' with arguments ${params}`);
+            console.info(`⏱ Performing SQL query '${text}' with arguments ${truncParams(params)}`);
             const result = await client.query(text, params);
             console.info(`✅ Query '${text}' finished successfully`);
             return result;
         } catch (exception) {
-            console.error(`⭕️ SQL-Query '${text}' with arguments ${params} failed: `, exception);
+            console.error(`⭕️ SQL-Query '${text}' with arguments ${truncParams(params)} failed: `, exception);
             return {
               rows: [],
               rowCount: 0,
@@ -56,12 +56,12 @@ export class DB {
         
             const results = await Promise.all(queries.map(async ([text, params]) => {
                 try {
-                    console.info(`⏱ Performing SQL query '${text}' with arguments ${params}`);
+                    console.info(`⏱ Performing SQL query '${text}' with arguments ${truncParams(params)}`);
                     const result = await client.query(text, params);
                     console.info(`✅ Query '${text}' finished successfully`);
                     return result;
                 } catch (exception) {
-                    console.error(`⭕️ SQL-Query '${text}' with arguments ${params} failed: `, exception);
+                    console.error(`⭕️ SQL-Query '${text}' with arguments ${truncParams(params)} failed: `, exception);
                     throw exception;
                 }
             }));
@@ -79,4 +79,8 @@ export class DB {
             client.release();
         }
     }
+}
+
+function truncParams(params: any[]) {
+    return params.map(param => param.toString().length > 20 ? `${param.toString().substring(0, 20)}...`: param);
 }
