@@ -1,7 +1,7 @@
 import { jsonToBuffer } from "../bufferUtil";
 import { Artist, Genre, Release, SocialLink, User } from "../entities";
 import { DB } from "../pg";
-import uuid from "uuid";
+import * as uuid from "uuid";
 
 const db = DB.getInstance();
 
