@@ -17,6 +17,7 @@ export async function getAllArtists() {
             socialLinks
         });
     }));
+    console.log(`Returning ${responseObject.length} items`);
     return responseObject;
 }
 
