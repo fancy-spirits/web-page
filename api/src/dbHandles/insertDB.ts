@@ -1,6 +1,7 @@
 import { jsonToBuffer } from "../bufferUtil";
 import { Artist, Genre, Release, SocialLink, User } from "../entities";
 import { DB } from "../pg";
+import uuid from "uuid";
 
 const db = DB.getInstance();
 
@@ -11,7 +12,7 @@ export async function createArtist(artist: Artist) {
         salt: "x"
     });
     const insertStatement = `INSERT INTO artists (name, picture, biography, user) VALUES ($1, $2, $3, $4) RETURNING *`;
-    const created: Artist = await (await db.querySingle(insertStatement, [artist.name, jsonToBuffer(artist.picture), artist.biography, artistUser.id!])).rows[0];
+    const created: Artist = await (await db.querySingle(insertStatement, [artist.name, jsonToBuffer(artist.picture), artist.biography, uuid.parse(artistUser.id!)])).rows[0];
     return created;
 }
 
@@ -20,7 +21,7 @@ export async function createRelease(release: Release, artists: Artist[]) {
     const insertStatementReleaseContribution = `INSERT INTO release_contribution (artist, release) VALUES ($1, $2) RETURNING *`;
     const result = await db.querySingle(insertStatementRelease, [release.name, release.release_date, release.release_type, jsonToBuffer(release.artwork), release.description]);
     const createdRelease = result.rows[0];
-    const queries: [text: string, params: any[]][] = artists.map(artist => [insertStatementReleaseContribution, [artist["id"], createdRelease["_id"]]]);
+    const queries: [text: string, params: any[]][] = artists.map(artist => [insertStatementReleaseContribution, [artist["id"], createdRelease["id"]]]);
     await db.queryMultiple([
         ...queries
     ]);
