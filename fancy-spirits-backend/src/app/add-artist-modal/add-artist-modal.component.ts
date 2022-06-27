@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, ViewChild } from '@angular/core';
 import { APIConnectorService } from '../apiconnector.service';
 import { Artist, Base64String } from '../entities';
 
@@ -11,6 +11,9 @@ import { Artist, Base64String } from '../entities';
 export class AddArtistModalComponent implements OnInit {
   @Input()
   visible = false;
+
+  @Input()
+  artistCreated = new EventEmitter();
 
   artistName: string = "";
   biography: string = "";
@@ -30,6 +33,7 @@ export class AddArtistModalComponent implements OnInit {
       observe: "response"
     }).subscribe(response => {
       this.toggleVisible();
+      this.artistCreated.emit();
     })
   }
 
