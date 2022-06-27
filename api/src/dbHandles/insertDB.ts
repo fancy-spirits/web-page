@@ -11,8 +11,8 @@ export async function createArtist(artist: Artist) {
         pwd_hash: "x",
         salt: "x"
     });
-    const insertStatement = `INSERT INTO artists (name, picture, biography, user) VALUES ($1, $2, $3, $4) RETURNING *`;
-    const created: Artist = await (await db.querySingle(insertStatement, [artist.name, jsonToBuffer(artist.picture), artist.biography, `'${artistUser.id!}'`])).rows[0];
+    const insertStatement = `INSERT INTO artists (name, picture, biography, "user") VALUES ($1, $2, $3, $4) RETURNING *`;
+    const created: Artist = await (await db.querySingle(insertStatement, [artist.name, jsonToBuffer(artist.picture), artist.biography, artistUser.id!])).rows[0];
     return created;
 }
 
