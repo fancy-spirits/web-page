@@ -7,7 +7,6 @@ export async function getAllArtists() {
     const queryString = `SELECT id, name, picture, biography FROM artists ORDER BY name ASC`;
     const socialQueryString = `SELECT platform, link, platform_type FROM social_link WHERE artist = $1`;
     const { rows } = await db.querySingle(queryString, []);
-    console.log(`Found ${rows.length} rows`);
     
     const responseObject: Artist[] = await Promise.all(rows.map(async row => {
         const socialLinks = (await db.querySingle(socialQueryString, [row.id])).rows ?? [];
@@ -16,7 +15,6 @@ export async function getAllArtists() {
             socialLinks
         };
     }));
-    console.log(`Returning ${responseObject.length} items`);
     return responseObject;
 }
 
