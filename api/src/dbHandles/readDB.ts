@@ -9,13 +9,12 @@ export async function getAllArtists() {
     const { rows } = await db.querySingle(queryString, []);
     console.log(`Found ${rows.length} rows`);
     
-    const responseObject: Artist[] = [];
-    await Promise.all(rows.map(row => async function(){
+    const responseObject: Artist[] = await Promise.all(rows.map(async row => {
         const socialLinks = (await db.querySingle(socialQueryString, [row.id])).rows ?? [];
-        responseObject.push({
+        return {
             ...row,
             socialLinks
-        });
+        };
     }));
     console.log(`Returning ${responseObject.length} items`);
     return responseObject;
