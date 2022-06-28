@@ -13,6 +13,8 @@ export async function createArtist(artist: Artist) {
     });
     const insertStatement = `INSERT INTO artists (name, picture, biography, "user") VALUES ($1, $2, $3, $4) RETURNING *`;
     const created: Artist = await (await db.querySingle(insertStatement, [artist.name, jsonToBuffer(artist.picture), artist.biography, artistUser.id!])).rows[0];
+    const insertStatementSocialLink = `INSERT INTO social_link (platform, link, platform_type, artist) VALUES ($1, $2, $3, $4)`;
+    await db.queryMultiple(artist.socialLinks.map(link => [insertStatementSocialLink, [link.platform, link.link, link.platform_type, created.id!]]));
     return created;
 }
 
