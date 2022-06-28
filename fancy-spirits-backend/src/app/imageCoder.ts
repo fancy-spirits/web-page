@@ -11,7 +11,7 @@ export function toBuffer(base64: string) {
 
 export function toBase64(buffer: any) {
     console.log("paramtype: ", typeof buffer, Object.keys(buffer));
-    console.log("bufferType: ", typeof buffer.data);
+    console.log("bufferType: ", typeof buffer.data, Object.keys(buffer.data));
     
     // const byteArray = new Uint8Array(buffer) as any;
     // // const imageB64 = base64.bytesToBase64(byteArray);
