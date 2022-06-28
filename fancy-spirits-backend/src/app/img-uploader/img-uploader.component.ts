@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { toBuffer } from '../imageCoder';
+import { ImageCoderService } from '../image-coder.service';
 
 @Component({
   selector: 'app-img-uploader',
@@ -15,7 +15,7 @@ export class ImgUploaderComponent implements OnInit {
   @Output("change")
   onChange = new EventEmitter<ArrayBuffer>();
 
-  constructor() {
+  constructor(private imageCoderService: ImageCoderService) {
   }
 
   ngOnInit(): void {
@@ -30,7 +30,7 @@ export class ImgUploaderComponent implements OnInit {
       reader.onload = (event) => { 
         this.fileContent = event.target?.result as string | undefined;
         this.fileUploaded = true;
-        const buffer = toBuffer(this.fileContent!);
+        const buffer = this.imageCoderService.toBuffer(this.fileContent!);
         this.onChange.emit(buffer);
       }
     }

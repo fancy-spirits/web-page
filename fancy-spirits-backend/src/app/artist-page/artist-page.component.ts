@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { APIConnectorService } from '../apiconnector.service';
 import { Artist } from '../entities';
-import { toBase64 } from '../imageCoder';
+import { ImageCoderService } from '../image-coder.service';
 import socialMediaIcons from "../socialMedia";
 
 @Component({
@@ -11,14 +11,18 @@ import socialMediaIcons from "../socialMedia";
   styleUrls: ['./artist-page.component.scss']
 })
 export class ArtistPageComponent implements OnInit {
-  toBase64 = toBase64;
+  toBase64 = this.imageCoderService.toBase64;
   getSocialMediaIcon = socialMediaIcons.get;
 
   artists: Artist[] = [];
 
   addArtistModalVisible = false;
 
-  constructor(private httpClient: HttpClient, private api: APIConnectorService) { }
+  constructor(
+    private httpClient: HttpClient, 
+    private api: APIConnectorService, 
+    private imageCoderService: ImageCoderService
+  ) { }
 
   ngOnInit(): void {
     this.loadArtists();
