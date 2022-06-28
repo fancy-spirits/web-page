@@ -1,7 +1,8 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, ElementRef, EventEmitter, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { APIConnectorService } from '../apiconnector.service';
-import { Artist, Base64String } from '../entities';
+import { Artist, SocialLink } from '../entities';
+import socialLinkIcons from "../socialMedia";
 
 @Component({
   selector: 'app-add-artist-modal',
@@ -9,32 +10,42 @@ import { Artist, Base64String } from '../entities';
   styleUrls: ['./add-artist-modal.component.scss']
 })
 export class AddArtistModalComponent implements OnInit {
+  socialLinkIcons = socialLinkIcons;
+
   @Input()
   visible = false;
 
-  @Input()
-  artistCreated = new EventEmitter();
+  @Output()
+  artistCreated = new EventEmitter<boolean>();
 
   artistName: string = "";
   biography: string = "";
   pictureFile?: ArrayBuffer;
+  mail: string = "";
+
+  socialLinks: SocialLink[] = [];
 
   toggleVisible(){
     this.visible = !this.visible;
   }
 
   onSave = () => {
-    this.httpClient.post(this.api.generateURL("/artists"), {
+    const artist: Artist = {
       biography: this.biography,
       name: this.artistName,
-      picture: this.pictureFile,
-      socialLinks: []
-    } as Artist, {
-      observe: "response"
-    }).subscribe(response => {
-      this.toggleVisible();
-      this.artistCreated.emit();
-    })
+      picture: this.pictureFile!,
+      socialLinks: this.socialLinks.filter(link => link.link.trim().length !== 0),
+      mail: this.mail
+    };
+
+    this.httpClient.post(this.api.generateURL("/artists"), artist, { observe: "response"})
+      .subscribe({
+        next: response => {
+          this.artistCreated.emit(response.status < 400);
+          this.toggleVisible();
+        },
+        error: _error => this.artistCreated.emit(false)
+      });
   }
 
   constructor(private httpClient: HttpClient, private api: APIConnectorService) { }
@@ -54,4 +65,33 @@ export class AddArtistModalComponent implements OnInit {
     this.pictureFile = picture;
   }
 
+  onMailChanged(event: any) {
+    this.mail = event.target.value;
+  }
+
+  onStreamingLinkChanged(event: any, key: string) {
+    const existingLink = this.socialLinks.find(link => link.platform_type === "streaming" && link.platform === key);
+    if (!!existingLink) {
+      existingLink.link = event.target.value;
+      return;
+    }
+    this.socialLinks.push({
+      link: event.target.value,
+      platform: key,
+      platform_type: "streaming"
+    });
+  }
+  
+  onSocialLinkChanged(event: any, key: string) {
+    const existingLink = this.socialLinks.find(link => link.platform_type === "social" && link.platform === key);
+    if (!!existingLink) {
+      existingLink.link = event.target.value;
+      return;
+    }
+    this.socialLinks.push({
+      link: event.target.value,
+      platform: key,
+      platform_type: "social"
+    });
+  }
 }

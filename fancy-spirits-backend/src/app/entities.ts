@@ -7,6 +7,7 @@ export interface Artist {
     picture: ArrayBuffer;
     biography: string;
     socialLinks: SocialLink[];
+    mail: string;
 };
 
 export interface SocialLink {

@@ -21,12 +21,17 @@
             <h1 class="formHeader">Artist Information</h1>
             <div class="input-element">
               <label for="artist-name">Name: </label>
-              <input type="text" name="artist-name" (keyup)="onNameChanged($event)">
+              <input class="text-input" type="text" name="artist-name" (keyup)="onNameChanged($event)">
             </div>
     
             <div class="input-element">
               <label for="biography">Biography: </label>
-              <textarea name="biography" (keyup)="onBiographyChanged($event)"></textarea>
+              <textarea class="text-input" name="biography" (keyup)="onBiographyChanged($event)"></textarea>
+            </div>
+
+            <div class="input-element">
+              <label for="artist-name">Mail: </label>
+              <input class="text-input" type="email" name="mail" (keyup)="onMailChanged($event)">
             </div>
           </div>
           <div class="imageSection">
@@ -35,11 +40,22 @@
           </div>
           <div class="socialSection">
             <h1 class="formHeader">Social Media Links</h1>
-            <p>Bla bla bla</p>
+            <div class="link-grid">
+              <div class="link-container">
+                <div class="social-link" *ngFor="let link of socialLinkIcons.streaming">
+                  <fa-icon [icon]="link.icon" size="2x"></fa-icon>
+                  <input type="url" class="text-input" (keyup)="onStreamingLinkChanged($event, link.key)">
+                </div>
+              </div>
+              <div class="link-container">
+                <div class="social-link" *ngFor="let link of socialLinkIcons.social">
+                  <fa-icon [icon]="link.icon" size="2x"></fa-icon>
+                  <input type="url" class="text-input" (keyup)="onSocialLinkChanged($event, link.key)">
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-        
-
       </div>
       <!--footer-->
       <div class="footer">

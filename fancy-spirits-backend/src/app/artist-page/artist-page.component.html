@@ -4,7 +4,7 @@
 
 <div class="toolbar">
     <button (click)="onNewArtist()">New</button>
-    <app-add-artist-modal [visible]="addArtistModalVisible" (artistCreated)="onArtistCreated()"></app-add-artist-modal>
+    <app-add-artist-modal [visible]="addArtistModalVisible" (artistCreated)="onArtistCreated($event)"></app-add-artist-modal>
 </div>
 
 <div class="artist-table flex flex-col">

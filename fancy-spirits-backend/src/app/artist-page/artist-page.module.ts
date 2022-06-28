@@ -5,6 +5,7 @@ import { ArtistPageRoutingModule } from './artist-page-routing.module';
 import { ArtistPageComponent } from './artist-page.component';
 import { AddArtistModalComponent } from '../add-artist-modal/add-artist-modal.component';
 import { ImgUploaderComponent } from '../img-uploader/img-uploader.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 
 @NgModule({
@@ -15,7 +16,8 @@ import { ImgUploaderComponent } from '../img-uploader/img-uploader.component';
   ],
   imports: [
     CommonModule,
-    ArtistPageRoutingModule
+    ArtistPageRoutingModule,
+    FontAwesomeModule
   ]
 })
 export class ArtistPageModule { }

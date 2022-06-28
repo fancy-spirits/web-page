@@ -27,6 +27,9 @@
 
             .body {
 
+                max-height: 70vh;
+                overflow-y: scroll;
+
                 h1.formHeader {
                     font-size: 1.25em;
                     font-weight: 300;
@@ -38,9 +41,8 @@
                     height: 100%;
                     display: grid;
                     grid-template-columns: repeat(3, 1fr);
-                    grid-template-rows: repeat(3, 1fr);
+                    grid-template-rows: repeat(2, 1fr);
                     grid-template-areas: 
-                        "image info info"
                         "image info info"
                         "social social social";
                     grid-column-gap: 0px;
@@ -62,6 +64,28 @@
                         grid-area: social;
                         @apply px-7;
                         @apply py-5;
+
+                        .link-grid {
+                            display: grid;
+                            grid-template-columns: 1fr 1fr;
+                        }
+
+                        .link-container {
+                            display: flex;
+                            flex-direction: column;
+                            justify-content: flex-start;
+                            align-items: center;
+
+                            .social-link {
+                                @apply m-2;
+                                display: flex;
+                                justify-content: space-between;
+
+                                input {
+                                    @apply p-1;
+                                }
+                            }
+                        }
                     }
 
                     p {
@@ -72,27 +96,6 @@
                         @apply py-2;
                         display: flex;
                         justify-content: space-between;
-    
-                        input[type="text"], textarea {
-                            @apply border outline-1 outline-slate-700 ml-5;
-                            border-radius: .33em;
-                            flex-grow: 3;
-                            transition: .33s;
-
-                            box-shadow: .0125em .05em .0125em 0em rgba(0,0,0,.1),
-                                inset .0125em .0125em .125em rgba(0,0,0,.1)
-                                -.5em -.5em #fff;
-                            
-                            &:hover {
-                                box-shadow: .1em .33em 1em 0em rgba(0,0,0,.15);
-                            }
-                        }
-    
-                        textarea {
-                            min-height: 10em;  
-                            padding: .5em;    
-                            resize: none;
-                        }
     
                         label {
                             font-weight: 400;
@@ -119,4 +122,33 @@
 
 .black-box {
     @apply opacity-50 fixed inset-0 z-40 bg-black h-full w-full;
+}
+
+.text-input {
+    @apply border outline-1 outline-slate-700 ml-5;
+    border-radius: .33em;
+    flex-grow: 3;
+    transition: .33s;
+
+    box-shadow: .0125em .05em .0125em 0em rgba(0,0,0,.1),
+        inset .0125em .0125em .125em rgba(0,0,0,.1)
+        -.5em -.5em #fff;
+    
+    &:hover {
+        box-shadow: .1em .33em 1em 0em rgba(0,0,0,.15);
+    }
+    
+    @at-root #{selector-unify(&, "input[type=\"text\"]")} {
+        @apply p-1;
+    }
+
+    @at-root #{selector-unify(&, "input[type=\"email\"]")} {
+        @apply p-1;
+    }
+
+    @at-root #{selector-unify(&,textarea)} {
+        min-height: 10em;  
+        padding: .5em;    
+        resize: none;
+    }
 }
