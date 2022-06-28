@@ -5,9 +5,9 @@ import * as uuid from "uuid";
 
 const db = DB.getInstance();
 
-export async function createArtist(artist: Artist, mail: string) {
+export async function createArtist(artist: Artist) {
     const artistUser = await createArtistUser({
-        privateMail: mail,
+        privateMail: artist.mail,
         pwd_hash: "x",
         salt: "x"
     });

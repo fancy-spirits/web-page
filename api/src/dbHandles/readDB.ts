@@ -6,13 +6,16 @@ const db = DB.getInstance();
 export async function getAllArtists() {
     const queryString = `SELECT id, name, picture, biography FROM artists ORDER BY name ASC`;
     const socialQueryString = `SELECT platform, link, platform_type FROM social_link WHERE artist = $1`;
+    const queryStringUser = `SELECT private_mail FROM users WHERE id = $1`;
     const { rows } = await db.querySingle(queryString, []);
     
     const responseObject: Artist[] = await Promise.all(rows.map(async row => {
         const socialLinks = (await db.querySingle(socialQueryString, [row.id])).rows ?? [];
+        const mail = (await db.querySingle(queryStringUser, [row.user])).rows[0].private_mail;
         return {
             ...row,
-            socialLinks
+            socialLinks,
+            mail
         };
     }));
     return responseObject;
