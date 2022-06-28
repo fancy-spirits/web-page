@@ -31,7 +31,10 @@ export class ArtistPageComponent implements OnInit {
   loadArtists = () => {
     this.httpClient.get(this.api.generateURL("/artists"), {observe: "body"}, )
       .subscribe({
-        next: body => this.artists = body as Artist[],
+        next: body => {
+          this.artists = body as Artist[];
+          console.log(this.artists);
+        },
         error: _error => console.log("Artists could not be loaded")
       });
   }
