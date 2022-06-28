@@ -8,6 +8,7 @@ import {default as deleteRoutes} from "./routes/delete";
 
 // Init DB Connection
 import { DB } from "./pg";
+import { handleServerError } from "./error";
 DB.getInstance();
 
 const app = express();
@@ -17,6 +18,7 @@ app.use(express.json({limit: "50mb"}));
 app.use(express.urlencoded({extended: true}));
 app.use(cors());
 app.use(morgan("combined"));
+app.use(handleServerError);
 
 // Add GET-Endpoints
 Object.entries(get).forEach(route => app.get(route[0], route[1]));
