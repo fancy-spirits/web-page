@@ -4,6 +4,7 @@ import { APIConnectorService } from '../apiconnector.service';
 import { Artist } from '../entities';
 import { ImageCoderService } from '../image-coder.service';
 import socialMediaIcons from "../socialMedia";
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-artist-page',
@@ -21,7 +22,8 @@ export class ArtistPageComponent implements OnInit {
   constructor(
     private httpClient: HttpClient, 
     private api: APIConnectorService, 
-    private imageCoderService: ImageCoderService
+    private imageCoderService: ImageCoderService,
+    public sanitizer: DomSanitizer
   ) { }
 
   ngOnInit(): void {

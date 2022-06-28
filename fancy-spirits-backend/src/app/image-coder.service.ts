@@ -6,7 +6,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 })
 export class ImageCoderService {
 
-  constructor(private sanitizer: DomSanitizer) { }
+  constructor() { }
 
   toBuffer(base64: string) {
     const decodedString = window.atob(base64.split(",")[1]);
@@ -17,11 +17,11 @@ export class ImageCoderService {
     return buffer;  
   }
 
-  toBase64(buffer: any) {
-      const imageB64_coded = Object.keys(buffer.data).reduce((prev, curr) => prev + String.fromCharCode(buffer.data[curr]), "");
-      console.log("Img64_coded: ", imageB64_coded);
+  toBase64(sanitizer: DomSanitizer, buffer: any) {
+      const imageB64_coded = Object.keys(buffer.data).reduce(
+        (prev, curr) => prev + String.fromCharCode(buffer.data[curr]), 
+      "");
       const imageB64 =  window.btoa(imageB64_coded);
-      console.log("Img64: ", imageB64);
-      return this.sanitizer.bypassSecurityTrustResourceUrl(`data:image/png;charset=utf-8;base64,${imageB64}`);
+      return sanitizer.bypassSecurityTrustResourceUrl(`data:image/png;charset=utf-8;base64,${imageB64}`);
   }
 }

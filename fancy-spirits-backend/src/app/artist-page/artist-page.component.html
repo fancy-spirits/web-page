@@ -30,7 +30,7 @@
             <tbody>
               <tr class="bg-white border-b" *ngFor="let artist of artists">
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    <img [src]="toBase64(artist.picture)">
+                    <img [src]="toBase64(this.sanitizer, artist.picture)">
                 </td>
                 <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
                   {{artist.name}}
