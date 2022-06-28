@@ -17,8 +17,14 @@
     margin-top: 0 !important;
     overflow-x: hidden;
 
-    .artist-image {
-        max-height: 2.5em;
+    .artist-image-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        .artist-image {
+            max-height: 2.5em;
+        }
     }
 
     .socialLink-container {
