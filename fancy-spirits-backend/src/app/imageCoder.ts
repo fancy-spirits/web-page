@@ -10,13 +10,10 @@ export function toBuffer(base64: string) {
 }
 
 export function toBase64(buffer: ArrayBuffer) {
-    console.log("buffertype: ", typeof buffer);
+    console.log("buffertype: ", typeof buffer, Object.keys(buffer));
     const byteArray = new Uint8Array(buffer) as any;
-    console.log("Bytearray: ", byteArray);
     // const imageB64 = base64.bytesToBase64(byteArray);
     let imageB64_coded = "";
-    console.log("Buffer Lengths: ", /* buffer.length, */ buffer.byteLength);
-    console.log("Bytearray Lengths: ", byteArray.length, byteArray.byteLength);
     
     for (let i = 0; i < byteArray.data.length; i++) {
         imageB64_coded += String.fromCharCode(byteArray.data[i]);
