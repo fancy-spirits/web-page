@@ -16,7 +16,8 @@ export function toBase64(buffer: Uint8Array | ArrayBuffer) {
     console.log("Bytearray: ", byteArray);
     // const imageB64 = base64.bytesToBase64(byteArray);
     let imageB64_coded = "";
-    console.log("Lengths: ", byteArray.length, byteArray.byteLength);
+    console.log("Buffer Lengths: ", /* buffer.length, */ buffer.byteLength);
+    console.log("Bytearray Lengths: ", byteArray.length, byteArray.byteLength);
     
     for (let i = 0; i < byteArray.length; i++) {
         imageB64_coded += byteArray[i];
