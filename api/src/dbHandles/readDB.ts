@@ -11,7 +11,9 @@ export async function getAllArtists() {
     
     const responseObject: Artist[] = await Promise.all(rows.map(async row => {
         const socialLinks = (await db.querySingle(socialQueryString, [row.id])).rows ?? [];
-        const mail = (await db.querySingle(queryStringUser, [row.user])).rows[0].private_mail;
+        const mailResult = await db.querySingle(queryStringUser, [row.user]);
+        console.log(mailResult);
+        const mail = mailResult.rows[0].private_mail;
         return {
             ...row,
             socialLinks,
