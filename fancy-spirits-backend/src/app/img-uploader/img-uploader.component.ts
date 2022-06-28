@@ -1,4 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { toBuffer } from '../imageCoder';
 
 @Component({
   selector: 'app-img-uploader',
@@ -12,7 +13,7 @@ export class ImgUploaderComponent implements OnInit {
   fileUploaded = false;
 
   @Output("change")
-  onChange = new  EventEmitter<ArrayBuffer>();
+  onChange = new EventEmitter<ArrayBuffer>();
 
   constructor() {
   }
@@ -29,12 +30,8 @@ export class ImgUploaderComponent implements OnInit {
       reader.onload = (event) => { 
         this.fileContent = event.target?.result as string | undefined;
         this.fileUploaded = true;
-        const decodedString = window.atob(this.fileContent?.split(",")[1] as string);
-        const buffer = new Uint8Array(decodedString.length);
-        for (let i = 0; i < decodedString.length; i++) {
-          buffer[i] = decodedString.charCodeAt(i);
-        }
-        this.onChange?.emit(buffer);
+        const buffer = toBuffer(this.fileContent!);
+        this.onChange.emit(buffer);
       }
     }
 }

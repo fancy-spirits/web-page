@@ -16,4 +16,13 @@
 .artist-table {
     margin-top: 0 !important;
     overflow-x: hidden;
+
+    .socialLink-container {
+        display: flex;
+        justify-content: flex-start;
+
+        a {
+            @apply m-3;
+        }
+    }
 }

@@ -2,6 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { APIConnectorService } from '../apiconnector.service';
 import { Artist } from '../entities';
+import { toBase64 } from '../imageCoder';
+import socialMediaIcons from "../socialMedia";
 
 @Component({
   selector: 'app-artist-page',
@@ -9,6 +11,8 @@ import { Artist } from '../entities';
   styleUrls: ['./artist-page.component.scss']
 })
 export class ArtistPageComponent implements OnInit {
+  toBase64 = toBase64;
+  getSocialMediaIcon = socialMediaIcons.get;
 
   artists: Artist[] = [];
 
@@ -37,5 +41,13 @@ export class ArtistPageComponent implements OnInit {
       alert("Creation failed");
     }
     this.loadArtists();
+  }
+
+  getSocialLinks(artist: Artist) {
+    return artist.socialLinks.filter(link => link.platform_type === "social");
+  }
+  
+  getStreamingLinks(artist: Artist) {
+    return artist.socialLinks.filter(link => link.platform_type === "streaming");
   }
 }
