@@ -17,9 +17,13 @@
     margin-top: 0 !important;
     overflow-x: hidden;
 
+    .artist-image {
+        max-height: 2.5em;
+    }
+
     .socialLink-container {
         display: flex;
-        justify-content: flex-start;
+        justify-content: center;
 
         a {
             @apply m-3;
