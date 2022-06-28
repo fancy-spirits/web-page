@@ -10,6 +10,7 @@ export function toBuffer(base64: string) {
 }
 
 export function toBase64(buffer: ArrayBuffer) {
+    console.log("buffertype: ", typeof buffer);
     const byteArray = new Uint8Array(buffer) as any;
     console.log("Bytearray: ", byteArray);
     // const imageB64 = base64.bytesToBase64(byteArray);
