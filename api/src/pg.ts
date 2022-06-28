@@ -82,5 +82,5 @@ export class DB {
 }
 
 function truncParams(params: any[]) {
-    return params.map(param => param.toString().length > 20 ? `${param.toString().substring(0, 20)}...`: param);
+    return params.map(param => `${param}`.length > 40 ? `${`${param}`.substring(0, 20)}...`: param);
 }
