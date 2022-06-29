@@ -90,8 +90,8 @@ export class AddArtistModalComponent implements OnInit {
   constructor(
     private httpClient: HttpClient, 
     private api: APIConnectorService, 
-    private sanitizer: DomSanitizer,
-    private imageCoder: ImageCoderService
+    public sanitizer: DomSanitizer,
+    public imageCoder: ImageCoderService
   ) { 
     this.submitBtnCaption = this.mode === "edit" ? "Edit" : "Add";
     this.title = this.mode === "edit" ? `Edit ${this.artistEdit.name}` : "Add Artist";

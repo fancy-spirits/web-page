@@ -36,8 +36,7 @@
           </div>
           <div class="imageSection">
             <h1 class="formHeader">Image</h1>
-            <app-img-uploader *ngIf="!prefills?.picture" class="inputElement" (change)="onPictureChanged($event)"></app-img-uploader>
-            <app-img-uploader *ngIf="!!prefills?.picture" [content]="prefills.picture" class="inputElement" (change)="onPictureChanged($event)"></app-img-uploader>
+            <app-img-uploader [content]="prefills?.picture" class="inputElement" (change)="onPictureChanged($event)"></app-img-uploader>
           </div>
           <div class="socialSection">
             <h1 class="formHeader">Social Media Links</h1>

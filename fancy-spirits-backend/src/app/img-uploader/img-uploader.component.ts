@@ -16,7 +16,7 @@ export class ImgUploaderComponent implements OnInit {
   @Output("change")
   onChange = new EventEmitter<ArrayBuffer>();
 
-  @Input() content!: SafeResourceUrl;
+  @Input() content?: SafeResourceUrl;
 
   constructor(private imageCoderService: ImageCoderService) {
   }
