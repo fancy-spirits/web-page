@@ -93,8 +93,8 @@ export class AddArtistModalComponent implements OnInit {
     private sanitizer: DomSanitizer,
     private imageCoder: ImageCoderService
   ) { 
-    this.submitBtnCaption = this.mode === "add" ? "Add" : "Edit";
-    this.title = this.mode === "add" ? "Add Artist" : `Edit ${this.artistEdit.name}`;
+    this.submitBtnCaption = this.mode === "edit" ? "Edit" : "Add";
+    this.title = this.mode === "edit" ? `Edit ${this.artistEdit.name}` : "Add Artist";
     if (this.mode === "edit") {
       const socialLinkPrefills = this.artistEdit.socialLinks.map(link => {
         const obj: {[key: string]: string} = {};

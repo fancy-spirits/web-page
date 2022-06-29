@@ -39,9 +39,10 @@ export class ArtistPageComponent implements OnInit {
   }
 
   onNewArtist(){
-    // this.addArtistModalVisible = true;
+    (this.visibleModal as ComponentRef<AddArtistModalComponent>)?.instance.cancel();
     const modal = this.modalAdd.createComponent(AddArtistModalComponent);
     modal.instance.artistCreated.subscribe(this.onArtistCreated);
+    modal.instance.mode = "add";
     this.visibleModal = modal;
   }
 
@@ -56,7 +57,7 @@ export class ArtistPageComponent implements OnInit {
       });
   }
 
-  onArtistCreated = (success: boolean | "cancel") => {
+  onArtistCreated = (success: boolean | "cancel", mode: "add" | "edit") => {
     switch (success) {
       // @ts-expect-error
       case true:
@@ -66,7 +67,7 @@ export class ArtistPageComponent implements OnInit {
         this.visibleModal = undefined;
         break;
       case false:
-        alert("Creation failed");
+        alert(`${mode === "add" ? "Creation failed" : "Editing artist failed"}`);
     }
   }
 
@@ -79,7 +80,12 @@ export class ArtistPageComponent implements OnInit {
   }
 
   onEditArtist(id: string) {
-
+    (this.visibleModal as ComponentRef<AddArtistModalComponent>).instance.cancel();
+    const modal = this.modalAdd.createComponent(AddArtistModalComponent);
+    modal.instance.artistCreated.subscribe(this.onArtistCreated);
+    modal.instance.mode = "edit";
+    modal.instance.artistEdit = this.artists.find(artist => artist.id === id)!;
+    this.visibleModal = modal;
   }
 
   onDeleteArtist(id: string) {
