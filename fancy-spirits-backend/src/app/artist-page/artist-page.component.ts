@@ -1,11 +1,12 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, ComponentRef, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { APIConnectorService } from '../apiconnector.service';
 import { Artist } from '../entities';
 import { ImageCoderService } from '../image-coder.service';
 import socialMediaIcons from "../socialMedia";
 import { DomSanitizer } from '@angular/platform-browser';
 import { faPenToSquare, faTrashCan } from '@fortawesome/free-regular-svg-icons';
+import { AddArtistModalComponent } from '../add-artist-modal/add-artist-modal.component';
 
 @Component({
   selector: 'app-artist-page',
@@ -19,6 +20,10 @@ export class ArtistPageComponent implements OnInit {
   iconDelete = faTrashCan;
 
   artists: Artist[] = [];
+
+  @ViewChild("modalAdd", {read: ViewContainerRef}) modalAdd!: ViewContainerRef;
+  AddArtistModalComponent = AddArtistModalComponent;
+  visibleModal?: ComponentRef<any> = undefined;
 
   addArtistModalVisible = false;
 
@@ -34,7 +39,10 @@ export class ArtistPageComponent implements OnInit {
   }
 
   onNewArtist(){
-    this.addArtistModalVisible = true;
+    // this.addArtistModalVisible = true;
+    const modal = this.modalAdd.createComponent(AddArtistModalComponent);
+    modal.instance.artistCreated.subscribe(this.onArtistCreated);
+    this.visibleModal = modal;
   }
 
   loadArtists = () => {
@@ -48,11 +56,18 @@ export class ArtistPageComponent implements OnInit {
       });
   }
 
-  onArtistCreated = (success: boolean) => {
-    if (!success) {
-      alert("Creation failed");
+  onArtistCreated = (success: boolean | "cancel") => {
+    switch (success) {
+      // @ts-expect-error
+      case true:
+        this.loadArtists();
+      case 'cancel':
+        this.modalAdd.remove(0);
+        this.visibleModal = undefined;
+        break;
+      case false:
+        alert("Creation failed");
     }
-    this.loadArtists();
   }
 
   getSocialLinks(artist: Artist) {
@@ -68,6 +83,6 @@ export class ArtistPageComponent implements OnInit {
   }
 
   onDeleteArtist(id: string) {
-    
+
   }
 }

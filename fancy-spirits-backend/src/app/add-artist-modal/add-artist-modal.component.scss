@@ -17,10 +17,13 @@
                 }
 
                 button {
-                    @apply p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none;
+                    // @apply p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none;
+                    @apply p-1 ml-auto bg-transparent border-0 text-gray-400 hover:text-gray-800 text-2xl;
+                    font-weight: 300;
+                    transition: .33s;
 
                     span {
-                        @apply bg-transparent text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none;
+                        // @apply bg-transparent text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none;
                     }
                 }
             }

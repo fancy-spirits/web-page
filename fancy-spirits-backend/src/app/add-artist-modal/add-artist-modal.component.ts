@@ -12,11 +12,11 @@ import socialLinkIcons from "../socialMedia";
 export class AddArtistModalComponent implements OnInit {
   socialLinkIcons = socialLinkIcons;
 
-  @Input()
-  visible = false;
+  // @Input()
+  // visible = false;
 
   @Output()
-  artistCreated = new EventEmitter<boolean>();
+  artistCreated = new EventEmitter<boolean | "cancel">();
 
   artistName: string = "";
   biography: string = "";
@@ -38,10 +38,14 @@ export class AddArtistModalComponent implements OnInit {
       .subscribe({
         next: response => {
           this.artistCreated.emit(response.status < 400);
-          this.visible = false;
+          // this.visible = false;
         },
         error: _error => this.artistCreated.emit(false)
       });
+  }
+
+  cancel() {
+    this.artistCreated.emit("cancel");
   }
 
   constructor(private httpClient: HttpClient, private api: APIConnectorService) { }
