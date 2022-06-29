@@ -1,8 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { APIConnectorService } from '../apiconnector.service';
 import { Artist, SocialLink } from '../entities';
 import socialLinkIcons from "../socialMedia";
+import { ImageCoderService } from "../image-coder.service";
 
 @Component({
   selector: 'app-add-artist-modal',
@@ -12,8 +14,11 @@ import socialLinkIcons from "../socialMedia";
 export class AddArtistModalComponent implements OnInit {
   socialLinkIcons = socialLinkIcons;
 
-  // @Input()
-  // visible = false;
+  @Input()
+  mode!: "add" | "edit";
+
+  @Input("artist")
+  artistEdit!: Artist;
 
   @Output()
   artistCreated = new EventEmitter<boolean | "cancel">();
@@ -25,7 +30,19 @@ export class AddArtistModalComponent implements OnInit {
 
   socialLinks: SocialLink[] = [];
 
+  submitBtnCaption!: string;
+  title!: string;
+  prefills!: Prefills;
+
   onSave = () => {
+    if (this.mode === "add") {
+      this.onCreateNewArtist();
+    } else {
+      this.onUpdateArtist();
+    }
+  }
+
+  onCreateNewArtist() {
     const artist: Artist = {
       biography: this.biography,
       name: this.artistName,
@@ -38,17 +55,61 @@ export class AddArtistModalComponent implements OnInit {
       .subscribe({
         next: response => {
           this.artistCreated.emit(response.status < 400);
-          // this.visible = false;
         },
         error: _error => this.artistCreated.emit(false)
       });
+  }
+
+  onUpdateArtist() {
+    const artist: Partial<Artist> = {
+      id: this.artistEdit.id,
+      biography: this.checkForChange(this.artistEdit.biography, this.biography),
+      mail: this.checkForChange(this.artistEdit.mail, this.mail),
+      name: this.checkForChange(this.artistEdit.name, this.artistName),
+      picture: this.checkForChange(this.artistEdit.picture, this.pictureFile),
+      // This will not work
+      socialLinks: this.checkForChange(this.artistEdit.socialLinks, this.socialLinks)
+    };
+    this.httpClient.patch(this.api.generateURL(`/artists/${this.artistEdit.name}`), artist, {observe: "response"})
+      .subscribe({
+        next: response => {
+          this.artistCreated.emit(response.status < 400);
+        },
+        error: _error => this.artistCreated.emit(false)
+      });
+  }
+
+  private checkForChange<T>(oldProp: T, newProp: T): T | undefined {
+    return oldProp !== newProp ? newProp : undefined;
   }
 
   cancel() {
     this.artistCreated.emit("cancel");
   }
 
-  constructor(private httpClient: HttpClient, private api: APIConnectorService) { }
+  constructor(
+    private httpClient: HttpClient, 
+    private api: APIConnectorService, 
+    private sanitizer: DomSanitizer,
+    private imageCoder: ImageCoderService
+  ) { 
+    this.submitBtnCaption = this.mode === "add" ? "Add" : "Edit";
+    this.title = this.mode === "add" ? "Add Artist" : `Edit ${this.artistEdit.name}`;
+    if (this.mode === "edit") {
+      const socialLinkPrefills = this.artistEdit.socialLinks.map(link => {
+        const obj: {[key: string]: string} = {};
+        obj[link.platform] = link.link;
+        return obj;
+      })
+      this.prefills = {
+        biography: this.artistEdit.biography,
+        name: this.artistEdit.name,
+        mail: this.artistEdit.mail,
+        picture: imageCoder.toBase64(this.sanitizer, this.artistEdit.picture),
+        links: socialLinkPrefills.reduce((prev, curr) => ({...prev, ...curr}), {})
+      }
+    }
+  }
 
   ngOnInit(): void {
   }
@@ -61,8 +122,9 @@ export class AddArtistModalComponent implements OnInit {
     this.biography = event.target.value;
   }
 
-  onPictureChanged(picture: ArrayBuffer) {
+  onPictureChanged = (picture: ArrayBuffer) => {
     this.pictureFile = picture;
+    this.prefills.picture = this.imageCoder.toBase64(this.sanitizer, picture);
   }
 
   onMailChanged(event: any) {
@@ -93,5 +155,15 @@ export class AddArtistModalComponent implements OnInit {
       platform: key,
       platform_type: "social"
     });
+  }
+}
+
+type Prefills = {
+  name: string;
+  biography: string;
+  mail: string;
+  picture: SafeResourceUrl;
+  links: {
+    [key: string]: string
   }
 }

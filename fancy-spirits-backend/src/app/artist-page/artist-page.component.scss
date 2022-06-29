@@ -44,8 +44,10 @@
         a {
             @apply m-3;
 
-            fa-icon {
+            .action-icon {
                 @apply text-slate-500 hover:text-slate-700;
+                width: 1em;
+                height: 1em;
             }
         }
     }

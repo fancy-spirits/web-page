@@ -53,8 +53,8 @@
                 </td>
                 <td>
                   <div class="actions-container">
-                    <a (click)="onEditArtist(artist.id!)"><fa-icon size="2x" [icon]="iconEdit"></fa-icon></a>
-                    <a (click)="onDeleteArtist(artist.id!)"><fa-icon size="2x" [icon]="iconDelete"></fa-icon></a>
+                    <a (click)="onEditArtist(artist.id!)"><fa-icon [classes]="['action-icon']" [icon]="iconEdit"></fa-icon></a>
+                    <a (click)="onDeleteArtist(artist.id!)"><fa-icon [classes]="['action-icon']" [icon]="iconDelete"></fa-icon></a>
                   </div>
                 </td>
               </tr>

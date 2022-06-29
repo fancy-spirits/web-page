@@ -7,7 +7,7 @@
       (click)="fileUpload.click()">
         <p *ngIf="!fileUploaded">No image</p>
         <div class="image" *ngIf="!!fileUploaded">
-            <img [src]="fileContent">
+            <img [src]="content">
         </div>
     </div>
 </div>
