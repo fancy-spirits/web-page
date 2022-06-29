@@ -5,6 +5,7 @@ import { Artist } from '../entities';
 import { ImageCoderService } from '../image-coder.service';
 import socialMediaIcons from "../socialMedia";
 import { DomSanitizer } from '@angular/platform-browser';
+import { faPenToSquare, faTrashCan } from '@fortawesome/free-regular-svg-icons';
 
 @Component({
   selector: 'app-artist-page',
@@ -14,6 +15,8 @@ import { DomSanitizer } from '@angular/platform-browser';
 export class ArtistPageComponent implements OnInit {
   toBase64 = this.imageCoderService.toBase64;
   getSocialMediaIcon = socialMediaIcons.get;
+  iconEdit = faPenToSquare;
+  iconDelete = faTrashCan;
 
   artists: Artist[] = [];
 
@@ -58,5 +61,13 @@ export class ArtistPageComponent implements OnInit {
   
   getStreamingLinks(artist: Artist) {
     return artist.socialLinks.filter(link => link.platform_type === "streaming");
+  }
+
+  onEditArtist(id: string) {
+
+  }
+
+  onDeleteArtist(id: string) {
+    
   }
 }

@@ -25,10 +25,6 @@ export class AddArtistModalComponent implements OnInit {
 
   socialLinks: SocialLink[] = [];
 
-  toggleVisible(){
-    this.visible = !this.visible;
-  }
-
   onSave = () => {
     const artist: Artist = {
       biography: this.biography,
@@ -42,7 +38,7 @@ export class AddArtistModalComponent implements OnInit {
       .subscribe({
         next: response => {
           this.artistCreated.emit(response.status < 400);
-          this.toggleVisible();
+          this.visible = false;
         },
         error: _error => this.artistCreated.emit(false)
       });

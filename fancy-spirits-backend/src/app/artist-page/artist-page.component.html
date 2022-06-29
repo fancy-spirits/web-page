@@ -25,6 +25,9 @@
                 <th scope="col" class="text-sm font-medium text-white px-6 py-4">
                   Streaming Links
                 </th>
+                <th scope="col" class="text-sm font-medium text-white px-6 py-4">
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -45,6 +48,12 @@
                 <td class="">
                   <div class="socialLink-container">
                     <a *ngFor="let streamingLink of getStreamingLinks(artist)" [href]="streamingLink.link"><fa-icon size="2x" [icon]="getSocialMediaIcon(streamingLink.platform)!.icon"></fa-icon></a>
+                  </div>
+                </td>
+                <td>
+                  <div class="actions-container">
+                    <a (click)="onEditArtist(artist.id!)"><fa-icon size="2x" [icon]="iconEdit"></fa-icon></a>
+                    <a (click)="onDeleteArtist(artist.id!)"><fa-icon size="2x" [icon]="iconDelete"></fa-icon></a>
                   </div>
                 </td>
               </tr>
