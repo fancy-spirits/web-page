@@ -124,7 +124,14 @@ export class AddArtistModalComponent implements OnInit {
 
   onPictureChanged = (picture: ArrayBuffer) => {
     this.pictureFile = picture;
-    this.prefills.picture = this.imageCoder.toBase64(this.sanitizer, picture);
+
+    if (!!this.prefills) {
+      this.prefills.picture = this.imageCoder.toBase64(this.sanitizer, picture);
+    } else {
+      this.prefills = {
+        picture: this.imageCoder.toBase64(this.sanitizer, picture)
+      }
+    }
   }
 
   onMailChanged(event: any) {
@@ -159,11 +166,11 @@ export class AddArtistModalComponent implements OnInit {
 }
 
 type Prefills = {
-  name: string;
-  biography: string;
-  mail: string;
+  name?: string;
+  biography?: string;
+  mail?: string;
   picture: SafeResourceUrl;
-  links: {
+  links?: {
     [key: string]: string
   }
 }

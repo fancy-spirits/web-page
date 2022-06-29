@@ -44,15 +44,15 @@
               <div class="link-container">
                 <div class="social-link" *ngFor="let link of socialLinkIcons.streaming">
                   <fa-icon [icon]="link.icon" size="2x"></fa-icon>
-                  <input *ngIf="!!(prefills?.links && prefills.links[link.key])" [value]="prefills.links[link.key]" type="url" class="text-input" (keyup)="onStreamingLinkChanged($event, link.key)">
-                  <input *ngIf="!(prefills?.links && prefills.links[link.key])" type="url" class="text-input" (keyup)="onStreamingLinkChanged($event, link.key)">
+                  <input *ngIf="!!(prefills?.links && prefills.links![link.key])" [value]="prefills.links![link.key]" type="url" class="text-input" (keyup)="onStreamingLinkChanged($event, link.key)">
+                  <input *ngIf="!(prefills?.links && prefills.links![link.key])" type="url" class="text-input" (keyup)="onStreamingLinkChanged($event, link.key)">
                 </div>
               </div>
               <div class="link-container">
                 <div class="social-link" *ngFor="let link of socialLinkIcons.social">
                   <fa-icon [icon]="link.icon" size="2x"></fa-icon>
-                  <input *ngIf="!!(prefills?.links && prefills.links[link.key])" [value]="prefills.links[link.key]" type="url" class="text-input" (keyup)="onSocialLinkChanged($event, link.key)">
-                  <input *ngIf="!(prefills?.links && prefills.links[link.key])" type="url" class="text-input" (keyup)="onSocialLinkChanged($event, link.key)">
+                  <input *ngIf="!!(prefills?.links && prefills.links![link.key])" [value]="prefills.links![link.key]" type="url" class="text-input" (keyup)="onSocialLinkChanged($event, link.key)">
+                  <input *ngIf="!(prefills?.links && prefills.links![link.key])" type="url" class="text-input" (keyup)="onSocialLinkChanged($event, link.key)">
                 </div>
               </div>
             </div>
