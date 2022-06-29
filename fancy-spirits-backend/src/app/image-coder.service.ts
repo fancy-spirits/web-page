@@ -18,7 +18,7 @@ export class ImageCoderService {
   }
 
   toBase64(sanitizer: DomSanitizer, buffer: any) {
-      const imageB64_coded = Object.keys(buffer.data).reduce(
+      const imageB64_coded = Object.keys(buffer?.data ?? {}).reduce(
         (prev, curr) => prev + String.fromCharCode(buffer.data[curr]), 
       "");
       const imageB64 =  window.btoa(imageB64_coded);

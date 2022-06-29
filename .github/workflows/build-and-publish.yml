@@ -26,6 +26,10 @@ jobs:
       
     - name: Create Version Tag
       run: echo "TAG=$(date +%s)" >> $GITHUB_ENV
+
+    - name: Load docker cache
+      uses: satackey/action-docker-layer@0.0.11
+      continue-on-error: true
         
     - name: Build the Docker image (Web)
       run: |
@@ -54,6 +58,10 @@ jobs:
     - name: Create Version Tag
       run: echo "TAG=$(date +%s)" >> $GITHUB_ENV
 
+    - name: Load docker cache
+      uses: satackey/action-docker-layer@0.0.11
+      continue-on-error: true
+
     - name: Build the Docker image (DB)
       run: |
         cd database
@@ -81,6 +89,10 @@ jobs:
       
     - name: Create Version Tag
       run: echo "TAG=$(date +%s)" >> $GITHUB_ENV
+
+    - name: Load docker cache
+      uses: satackey/action-docker-layer@0.0.11
+      continue-on-error: true
 
     - name: Build the Docker image (API)
       run: |
