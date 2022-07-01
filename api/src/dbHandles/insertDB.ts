@@ -30,7 +30,10 @@ export async function createRelease(release: Release, artists: Artist[]) {
     return createdRelease as Release;
 }
 
-export async function createSocialLinks(socialLinks: SocialLink[], artist: Artist & {id: string}) {
+export async function createSocialLinks(socialLinks: SocialLink[], artist: Artist) {
+    if (!artist.id) {
+        throw "Artist ID is required";
+    }
     const insertStatementSocialLink = `INSERT INTO social_link (platform, link, platform_type, artist) VALUES ($1, $2, $3, $4) RETURNING *`;
     const queries: [text: string, params: any[]][] = socialLinks.map(socialLink => [insertStatementSocialLink,  [socialLink.platform, socialLink.link, socialLink.platform_type, artist.id]]);
     const results = await db.queryMultiple([

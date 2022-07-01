@@ -1,6 +1,8 @@
 import { jsonToBuffer } from "../bufferUtil";
 import { Artist, Release, SocialLink, User } from "../entities";
 import { DB } from "../pg";
+import { createSocialLinks } from "./insertDB";
+import { getArtistSocialLinks } from "./readDB";
 
 const db = DB.getInstance();
 
@@ -17,15 +19,30 @@ export async function updateArtist(artist: Partial<Artist>, name: string) {
         ...{biography: artist.biography ?? existingArtist.biography},
         ...{name: artist.name ?? existingArtist.name},
         ...{picture: newPicture ?? existingArtist.picture},
-        ...{socialLinks: existingArtist.socialLinks},
-        // ...{socialLinks: artist.socialLinks ?? existingArtist.socialLinks},
+        ...{socialLinks: existingArtist.socialLinks}, // No effect
     };
+
+    // Update Mail
     if (!!artist.mail && existingArtist.mail !== artist.mail) {
         await updateUser({
             id: existingArtistResult.rows[0].user,
             privateMail: artist.mail
         });
     }
+
+    // Update Social Links
+    const existingLinks = await getArtistSocialLinks(existingArtist.name);
+    await Promise.all(artist.socialLinks!.map(async link => {
+        // Link exists --> gets updated
+        if (existingLinks.find(existingLink => existingLink.platform === link.platform)) {
+            await updateSocialLink(link, existingArtist, link.platform);
+        } else {
+            // Link does not exist --> gets created
+            await createSocialLinks([link], existingArtist);
+        }
+    }))
+
+    // Update Artist
     const updateStatementArtist = `UPDATE artists SET biography = $1, name = $2, picture = $3 WHERE name = $4`;
     const updatedArtistResult = await db.querySingle(updateStatementArtist, [updatedArtist.biography, updatedArtist.name, updatedArtist.picture, name]); 
     return updatedArtistResult.rows[0] as Artist;
@@ -66,7 +83,10 @@ export async function updateRelease(release: Partial<Release>, id: string) {
     return updatedReleaseResult.rows[0] as Release;
 }
 
-export async function updateSocialLink(socialLink: Partial<SocialLink>, artist: Artist & {id: string}, platform: string) {
+export async function updateSocialLink(socialLink: Partial<SocialLink>, artist: Artist, platform: string) {
+    if (!artist.id) {
+        throw "Artist ID is required";
+    }
     const queryStatementSocialLink = `SELECT platform, link, platform_type FROM social_link WHERE artist = $1 AND platform = $2`;
     const existingSocialLinkResult = await db.querySingle(queryStatementSocialLink, [artist.id, platform]);
     const existingSocialLink: SocialLink = existingSocialLinkResult.rows[0];

@@ -80,22 +80,22 @@ export class AddArtistModalComponent implements OnInit {
   }
 
   onUpdateArtist() {
-    if (!this.artistName || this.artistName.trim().length === 0 
+    if (!this.artistInput 
+      || !this.artistName || this.artistName.trim().length === 0 
       || !this.biography ||this.biography.trim().length === 0 
       || !this.picture || this.picture.trim().length === 0 
       || !this.mail || this.mail.trim().length === 0) {
         this.artistOutput.emit(false);
         return;
     }
-    const oldImage = this.imageCoder.bufferToString(this.artistInput!.picture);
+    const oldImage = this.imageCoder.bufferToString(this.artistInput.picture);
     const artist: Partial<Artist> = {
-      id: this.artistInput!.id,
-      biography: this.checkForChange(this.artistInput!.biography, this.biography),
-      mail: this.checkForChange(this.artistInput!.mail, this.mail),
-      name: this.checkForChange(this.artistInput!.name, this.artistName),
+      id: this.artistInput.id,
+      biography: this.checkForChange(this.artistInput.biography, this.biography),
+      mail: this.checkForChange(this.artistInput.mail, this.mail),
+      name: this.checkForChange(this.artistInput.name, this.artistName),
       picture: this.imageCoder.stringToBuffer(this.checkForChange(oldImage, this.picture)),
-      // This will not work
-      socialLinks: this.checkForChange(this.artistInput!.socialLinks, this.socialLinks)
+      socialLinks: this.socialLinks
     };
     this.httpClient.patch(this.api.generateURL(`/artists/${this.artistInput!.name}`), artist, {observe: "response"})
       .subscribe({
