@@ -8,13 +8,14 @@ export async function updateArtist(artist: Partial<Artist>, name: string) {
     const queryStatementArtist = `SELECT FROM artists WHERE name = $1`;
     const existingArtistResult = await db.querySingle(queryStatementArtist, [name]);
     const existingArtist: Artist = existingArtistResult.rows[0];
-    console.log(artist.picture);
+    console.log(artist.name, existingArtist.name);
     
     const newPicture = !!artist.picture ? jsonToBuffer(artist.picture) : undefined;
     const updatedArtist = {
         ...{biography: artist.biography ?? existingArtist.biography},
         ...{name: artist.name ?? existingArtist.name},
         ...{picture: newPicture ?? existingArtist.picture},
+        ...{socialLinks: existingArtist.socialLinks},
         // ...{socialLinks: artist.socialLinks ?? existingArtist.socialLinks},
     };
     const updateStatementArtist = `UPDATE artists SET biography = $1, name = $2, picture = $3 WHERE name = $4`;
