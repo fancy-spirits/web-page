@@ -9,7 +9,7 @@
             @apply border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none;
 
             .header {
-                @apply flex items-start justify-between p-3 border-b border-solid border-slate-200 rounded-t;
+                @apply flex items-start justify-between p-3 pl-4 border-b border-solid border-slate-200 rounded-t;
 
                 h3 {
                     font-weight: 300;
@@ -20,11 +20,11 @@
             .body {
 
                 max-height: 30vh;
-                @apply p-2;
+                @apply p-4;
 
                 p {
                     @apply my-4 text-slate-800 text-lg leading-relaxed;
-                    font-size: 1.25em;
+                    font-size: 1em;
                 }
             }
 
