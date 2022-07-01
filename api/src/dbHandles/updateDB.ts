@@ -38,7 +38,9 @@ export async function updateArtist(artist: Partial<Artist>, name: string) {
             await updateSocialLink(link, existingArtist, link.platform);
         } else {
             // Link does not exist --> gets created
-            await createSocialLinks([link], existingArtist);
+            if (link.link.trim().length > 0) {
+                await createSocialLinks([link], existingArtist);
+            }
         }
     }))
 
