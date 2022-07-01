@@ -1,0 +1,33 @@
+<div class="outer-wrapper">
+    <div class="middle-wrapper">
+      <!--content-->
+      <div class="inner-wrapper">
+        <!--header-->
+        <div class="header">
+          <h3>
+            {{ title }}
+          </h3>
+          <!-- <button (click)="cancel()">
+              <span>
+                  x
+              </span>
+          </button> -->
+        </div>
+        <!-- body -->
+        <div class="body">
+            <p>{{ message }}</p>
+        </div>
+        <!--footer-->
+        <div class="footer">
+          <button class="secondary" type="button" (click)="onNo()">
+            No
+          </button>
+          <button class="primary" type="button" (click)="onYes()">
+            Yes
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="black-box"></div>
+  

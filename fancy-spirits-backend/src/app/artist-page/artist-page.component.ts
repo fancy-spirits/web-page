@@ -7,6 +7,7 @@ import socialMediaIcons from "../socialMedia";
 import { DomSanitizer } from '@angular/platform-browser';
 import { faPenToSquare, faTrashCan } from '@fortawesome/free-regular-svg-icons';
 import { AddArtistModalComponent } from '../add-artist-modal/add-artist-modal.component';
+import { DialogService } from '../dialog.service';
 
 @Component({
   selector: 'app-artist-page',
@@ -21,6 +22,8 @@ export class ArtistPageComponent implements OnInit {
 
   artists: Artist[] = [];
 
+  @ViewChild("confirmationDialog", {read: ViewContainerRef}) confirmationDialog!: ViewContainerRef;
+
   @ViewChild("modalAdd", {read: ViewContainerRef}) modalAdd!: ViewContainerRef;
   AddArtistModalComponent = AddArtistModalComponent;
   visibleModal?: ComponentRef<any> = undefined;
@@ -31,7 +34,8 @@ export class ArtistPageComponent implements OnInit {
     private httpClient: HttpClient, 
     private api: APIConnectorService, 
     private imageCoderService: ImageCoderService,
-    public sanitizer: DomSanitizer
+    public sanitizer: DomSanitizer,
+    private dialogService: DialogService
   ) { }
 
   ngOnInit(): void {
@@ -51,7 +55,6 @@ export class ArtistPageComponent implements OnInit {
       .subscribe({
         next: body => {
           this.artists = body as Artist[];
-          console.log(this.artists);
         },
         error: _error => console.log("Artists could not be loaded")
       });
@@ -88,7 +91,19 @@ export class ArtistPageComponent implements OnInit {
     this.visibleModal = modal;
   }
 
-  onDeleteArtist(id: string) {
+  async onDeleteArtist(artist: Artist) {
+    const message = `Do you really want to fire ${artist.name}?
+    All solo releases will be deleted, too! `;
+    const deleteArtist = await this.dialogService.showConfirmationDialog(this.confirmationDialog, "Attention", message);
+    
+    if (!deleteArtist) {
+      return;
+    }
 
+    this.httpClient.delete(this.api.generateURL(`/artists/${artist.name}`), {observe: "response"})
+      .subscribe({
+        next: () => alert(`${artist.name} was fired sucessfully`),
+        error: () => alert(`${artist.name} could not be fired…`)
+      });
   }
 }

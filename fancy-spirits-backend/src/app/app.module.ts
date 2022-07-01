@@ -7,11 +7,13 @@ import { NavigationPaneComponent } from './navigation-pane/navigation-pane.compo
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { HttpClientModule } from "@angular/common/http";
 import { FormsModule } from '@angular/forms';
+import { ConfirmationModalComponent } from './confirmation-modal/confirmation-modal.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    NavigationPaneComponent
+    NavigationPaneComponent,
+    ConfirmationModalComponent
   ],
   imports: [
     BrowserModule,
