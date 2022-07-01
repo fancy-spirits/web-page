@@ -7,7 +7,7 @@
         
         .inner-wrapper {
             @apply border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none;
-            aspect-ratio: 9 / 16;
+            aspect-ratio: 14 / 9;
 
             .header {
                 @apply flex items-start justify-between p-3 pl-4 border-b border-solid border-slate-200 rounded-t;
