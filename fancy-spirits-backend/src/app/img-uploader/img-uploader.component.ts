@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { SafeResourceUrl } from '@angular/platform-browser';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ImageCoderService } from '../image-coder.service';
 
 @Component({
@@ -9,16 +9,15 @@ import { ImageCoderService } from '../image-coder.service';
 })
 export class ImgUploaderComponent implements OnInit {
 
-  fileContent?: string = undefined;
-  requiredFileType: string = "image/png, image/jpg";
-  fileUploaded = false;
+  requiredFileType: string = "image/png";
+  
+  @Input() content?: string;
+  @Output() contentChange = new EventEmitter<string>();
 
-  @Output("change")
-  onChange = new EventEmitter<ArrayBuffer>();
-
-  @Input() content?: SafeResourceUrl;
-
-  constructor(private imageCoderService: ImageCoderService) {
+  constructor(
+    public imageCoder: ImageCoderService,
+    public sanitizer: DomSanitizer
+  ) {
   }
 
   ngOnInit(): void {
@@ -31,11 +30,10 @@ export class ImgUploaderComponent implements OnInit {
       reader.readAsDataURL(event.target.files[0]); 
 
       reader.onload = (event) => { 
-        this.fileContent = event.target?.result as string | undefined;
-        this.fileUploaded = true;
-        this.content = event.target?.result as SafeResourceUrl;
-        const buffer = this.imageCoderService.toBuffer(this.fileContent!);
-        this.onChange.emit(buffer);
+        const rawContent = event.target?.result as string;
+        // Trim Base64 Prefix (data:base64…)
+        this.content = rawContent.split(",")[1];
+        this.contentChange.emit(this.content);
       }
     }
 }

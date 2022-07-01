@@ -6,6 +6,7 @@ import { ArtistPageComponent } from './artist-page.component';
 import { AddArtistModalComponent } from '../add-artist-modal/add-artist-modal.component';
 import { ImgUploaderComponent } from '../img-uploader/img-uploader.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { FormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -17,7 +18,8 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
   imports: [
     CommonModule,
     ArtistPageRoutingModule,
-    FontAwesomeModule
+    FontAwesomeModule,
+    FormsModule
   ]
 })
 export class ArtistPageModule { }

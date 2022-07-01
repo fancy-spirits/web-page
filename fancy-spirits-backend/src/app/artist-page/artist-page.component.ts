@@ -14,7 +14,7 @@ import { AddArtistModalComponent } from '../add-artist-modal/add-artist-modal.co
   styleUrls: ['./artist-page.component.scss']
 })
 export class ArtistPageComponent implements OnInit {
-  toBase64 = this.imageCoderService.toBase64;
+  toBase64 = this.imageCoderService.bufferToSanitizedString;
   getSocialMediaIcon = socialMediaIcons.get;
   iconEdit = faPenToSquare;
   iconDelete = faTrashCan;
@@ -41,7 +41,7 @@ export class ArtistPageComponent implements OnInit {
   onNewArtist(){
     (this.visibleModal as ComponentRef<AddArtistModalComponent>)?.instance.cancel();
     const modal = this.modalAdd.createComponent(AddArtistModalComponent);
-    modal.instance.artistCreated.subscribe(this.onArtistCreated);
+    modal.instance.artistOutput.subscribe(this.onArtistCreated);
     modal.instance.mode = "add";
     this.visibleModal = modal;
   }
@@ -82,9 +82,9 @@ export class ArtistPageComponent implements OnInit {
   onEditArtist(id: string) {
     (this.visibleModal as ComponentRef<AddArtistModalComponent>).instance.cancel();
     const modal = this.modalAdd.createComponent(AddArtistModalComponent);
-    modal.instance.artistCreated.subscribe(this.onArtistCreated);
+    modal.instance.artistOutput.subscribe(this.onArtistCreated);
     modal.instance.mode = "edit";
-    modal.instance.artistEdit = this.artists.find(artist => artist.id === id)!;
+    modal.instance.artistInput = this.artists.find(artist => artist.id === id)!;
     this.visibleModal = modal;
   }
 

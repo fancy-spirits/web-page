@@ -5,9 +5,9 @@
 <div class="file-upload">
     <div class="button"
       (click)="fileUpload.click()">
-        <p *ngIf="!fileUploaded">No image</p>
-        <div class="image" *ngIf="!!fileUploaded">
-            <img [src]="content">
+        <p *ngIf="!content">No image</p>
+        <div class="image" *ngIf="!!content">
+            <img [src]="imageCoder.stringToSanitizedString(sanitizer, content)">
         </div>
     </div>
 </div>

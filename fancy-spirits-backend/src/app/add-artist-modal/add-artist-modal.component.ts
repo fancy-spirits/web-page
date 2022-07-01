@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { DomSanitizer } from '@angular/platform-browser';
 import { APIConnectorService } from '../apiconnector.service';
 import { Artist, SocialLink } from '../entities';
 import socialLinkIcons from "../socialMedia";
@@ -18,21 +18,25 @@ export class AddArtistModalComponent implements OnInit {
   mode!: "add" | "edit";
 
   @Input("artist")
-  artistEdit!: Artist;
+  artistInput?: Artist;
 
   @Output()
-  artistCreated = new EventEmitter<boolean | "cancel">();
+  artistOutput = new EventEmitter<boolean | "cancel">();
 
-  artistName: string = "";
-  biography: string = "";
-  pictureFile?: ArrayBuffer;
-  mail: string = "";
+  artistName?: string;
+  biography?: string;
+  picture?: string;
+  mail?: string;
+  // artistName: string = "";
+  // biography: string = "";
+  // pictureFile?: ArrayBuffer;
+  // mail: string = "";
 
-  socialLinks: SocialLink[] = [];
+  socialLinks!: SocialLink[];
 
   submitBtnCaption!: string;
   title!: string;
-  prefills!: Prefills;
+  // prefills!: Prefills;
 
   onSave = () => {
     if (this.mode === "add") {
@@ -42,11 +46,26 @@ export class AddArtistModalComponent implements OnInit {
     }
   }
 
+  findSocialLink(key: string) {
+    const socialLink = this.socialLinks.find(link => link.platform === key);
+    if (!socialLink) {
+      throw "Invalid Key";
+    }
+    return socialLink;
+  }
+
   onCreateNewArtist() {
+    if (!this.artistName || this.artistName.trim().length === 0 
+      || !this.biography ||this.biography.trim().length === 0 
+      || !this.picture || this.picture.trim().length === 0 
+      || !this.mail || this.mail.trim().length === 0) {
+        this.artistOutput.emit(false);
+        return;
+    }
     const artist: Artist = {
       biography: this.biography,
       name: this.artistName,
-      picture: this.pictureFile!,
+      picture: this.imageCoder.stringToBuffer(this.picture)!,
       socialLinks: this.socialLinks.filter(link => link.link.trim().length !== 0),
       mail: this.mail
     };
@@ -54,28 +73,36 @@ export class AddArtistModalComponent implements OnInit {
     this.httpClient.post(this.api.generateURL("/artists"), artist, { observe: "response"})
       .subscribe({
         next: response => {
-          this.artistCreated.emit(response.status < 400);
+          this.artistOutput.emit(response.status < 400);
         },
-        error: _error => this.artistCreated.emit(false)
+        error: _error => this.artistOutput.emit(false)
       });
   }
 
   onUpdateArtist() {
+    if (!this.artistName || this.artistName.trim().length === 0 
+      || !this.biography ||this.biography.trim().length === 0 
+      || !this.picture || this.picture.trim().length === 0 
+      || !this.mail || this.mail.trim().length === 0) {
+        this.artistOutput.emit(false);
+        return;
+    }
+    const oldImage = this.imageCoder.bufferToString(this.artistInput!.picture);
     const artist: Partial<Artist> = {
-      id: this.artistEdit.id,
-      biography: this.checkForChange(this.artistEdit.biography, this.biography),
-      mail: this.checkForChange(this.artistEdit.mail, this.mail),
-      name: this.checkForChange(this.artistEdit.name, this.artistName),
-      picture: this.checkForChange(this.artistEdit.picture, this.pictureFile),
+      id: this.artistInput!.id,
+      biography: this.checkForChange(this.artistInput!.biography, this.biography),
+      mail: this.checkForChange(this.artistInput!.mail, this.mail),
+      name: this.checkForChange(this.artistInput!.name, this.artistName),
+      picture: this.imageCoder.stringToBuffer(this.checkForChange(oldImage, this.picture)),
       // This will not work
-      socialLinks: this.checkForChange(this.artistEdit.socialLinks, this.socialLinks)
+      socialLinks: this.checkForChange(this.artistInput!.socialLinks, this.socialLinks)
     };
-    this.httpClient.patch(this.api.generateURL(`/artists/${this.artistEdit.name}`), artist, {observe: "response"})
+    this.httpClient.patch(this.api.generateURL(`/artists/${this.artistInput!.name}`), artist, {observe: "response"})
       .subscribe({
         next: response => {
-          this.artistCreated.emit(response.status < 400);
+          this.artistOutput.emit(response.status < 400);
         },
-        error: _error => this.artistCreated.emit(false)
+        error: _error => this.artistOutput.emit(false)
       });
   }
 
@@ -84,7 +111,7 @@ export class AddArtistModalComponent implements OnInit {
   }
 
   cancel() {
-    this.artistCreated.emit("cancel");
+    this.artistOutput.emit("cancel");
   }
 
   constructor(
@@ -92,85 +119,68 @@ export class AddArtistModalComponent implements OnInit {
     private api: APIConnectorService, 
     public sanitizer: DomSanitizer,
     public imageCoder: ImageCoderService
-  ) { 
-    this.submitBtnCaption = this.mode === "edit" ? "Edit" : "Add";
-    this.title = this.mode === "edit" ? `Edit ${this.artistEdit.name}` : "Add Artist";
-    if (this.mode === "edit") {
-      const socialLinkPrefills = this.artistEdit.socialLinks.map(link => {
-        const obj: {[key: string]: string} = {};
-        obj[link.platform] = link.link;
-        return obj;
-      })
-      this.prefills = {
-        biography: this.artistEdit.biography,
-        name: this.artistEdit.name,
-        mail: this.artistEdit.mail,
-        picture: imageCoder.toBase64(this.sanitizer, this.artistEdit.picture),
-        links: socialLinkPrefills.reduce((prev, curr) => ({...prev, ...curr}), {})
-      }
+  ) { }
+
+  initCreate() {
+    this.submitBtnCaption = "Add";
+    this.title = "Add Artist";
+  }
+
+  initEdit() {
+    // Verify mandatory input
+    if (!this.artistInput) {
+      throw "In Edit Mode, a user needs to be passed!";
     }
+    // Initialize UI
+    this.submitBtnCaption = "Edit";
+    this.title = `Edit ${this.artistInput.name}`;
+
+    // Initialize inputs
+    this.artistName = this.artistInput.name;
+    this.biography = this.artistInput.biography;
+    this.mail = this.artistInput.mail;
+    this.socialLinks = this.artistInput.socialLinks;
+    this.picture = this.imageCoder.bufferToString(this.artistInput.picture);
   }
 
   ngOnInit(): void {
-  }
-
-  onNameChanged(event: any) {
-    this.artistName = event.target.value;
-  }
-
-  onBiographyChanged(event: any) {
-    this.biography = event.target.value;
-  }
-
-  onPictureChanged = (picture: ArrayBuffer) => {
-    this.pictureFile = picture;
-
-    if (!!this.prefills) {
-      this.prefills.picture = this.imageCoder.toBase64(this.sanitizer, picture);
-    } else {
-      this.prefills = {
-        picture: this.imageCoder.toBase64(this.sanitizer, picture)
-      }
+    switch (this.mode) {
+      case "add": 
+        this.initCreate(); break;
+      case "edit":
+        this.initEdit(); break;
+      default: 
+        throw "Mode must be set!";
     }
+    this.initSocialLinks();
   }
 
-  onMailChanged(event: any) {
-    this.mail = event.target.value;
-  }
-
-  onStreamingLinkChanged(event: any, key: string) {
-    const existingLink = this.socialLinks.find(link => link.platform_type === "streaming" && link.platform === key);
-    if (!!existingLink) {
-      existingLink.link = event.target.value;
-      return;
-    }
-    this.socialLinks.push({
-      link: event.target.value,
-      platform: key,
+  initSocialLinks() {
+    this.socialLinks = [];
+    
+    // Initialize to prevent NPE
+    socialLinkIcons.streaming.forEach(link => this.socialLinks.push({
+      link: "",
+      platform: link.key,
       platform_type: "streaming"
-    });
-  }
-  
-  onSocialLinkChanged(event: any, key: string) {
-    const existingLink = this.socialLinks.find(link => link.platform_type === "social" && link.platform === key);
-    if (!!existingLink) {
-      existingLink.link = event.target.value;
+    }));
+    
+    socialLinkIcons.social.forEach(link => this.socialLinks.push({
+      link: "",
+      platform: link.key,
+      platform_type: "social"
+    }));
+
+    // If Edit
+    if (!this.artistInput) {
       return;
     }
-    this.socialLinks.push({
-      link: event.target.value,
-      platform: key,
-      platform_type: "social"
-    });
-  }
-}
-
-type Prefills = {
-  name?: string;
-  biography?: string;
-  mail?: string;
-  picture: SafeResourceUrl;
-  links?: {
-    [key: string]: string
+    this.artistInput.socialLinks.forEach(socialLink => {
+      const link = this.socialLinks.find(link => socialLink.platform === link.platform);
+      if (!link) {
+        throw "Invalid Key";
+      }
+      link.link = socialLink.link;
+    })
   }
 }

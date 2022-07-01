@@ -21,22 +21,22 @@
             <h1 class="formHeader">Artist Information</h1>
             <div class="input-element">
               <label for="artist-name">Name: </label>
-              <input [value]="prefills?.name" class="text-input" type="text" name="artist-name" (keyup)="onNameChanged($event)">
+              <input [(ngModel)]="artistName" class="text-input" type="text" name="artist-name">
             </div>
     
             <div class="input-element">
               <label for="biography">Biography: </label>
-              <textarea [value]="prefills?.biography" class="text-input" name="biography" (keyup)="onBiographyChanged($event)"></textarea>
+              <textarea [(ngModel)]="biography" class="text-input" name="biography"></textarea>
             </div>
 
             <div class="input-element">
-              <label for="artist-name">Mail: </label>
-              <input [value]="prefills?.mail" class="text-input" type="email" name="mail" (keyup)="onMailChanged($event)">
+              <label for="mail">Mail: </label>
+              <input [(ngModel)]="mail" class="text-input" type="email" name="mail">
             </div>
           </div>
           <div class="imageSection">
             <h1 class="formHeader">Image</h1>
-            <app-img-uploader [content]="prefills?.picture" class="inputElement" (change)="onPictureChanged($event)"></app-img-uploader>
+            <app-img-uploader [(content)]="picture" class="inputElement"></app-img-uploader>
           </div>
           <div class="socialSection">
             <h1 class="formHeader">Social Media Links</h1>
@@ -44,15 +44,13 @@
               <div class="link-container">
                 <div class="social-link" *ngFor="let link of socialLinkIcons.streaming">
                   <fa-icon [icon]="link.icon" size="2x"></fa-icon>
-                  <input *ngIf="!!(prefills?.links && prefills.links![link.key])" [value]="prefills.links![link.key]" type="url" class="text-input" (keyup)="onStreamingLinkChanged($event, link.key)">
-                  <input *ngIf="!(prefills?.links && prefills.links![link.key])" type="url" class="text-input" (keyup)="onStreamingLinkChanged($event, link.key)">
+                  <input [(ngModel)]="findSocialLink(link.key).link" type="url" class="text-input">
                 </div>
               </div>
               <div class="link-container">
                 <div class="social-link" *ngFor="let link of socialLinkIcons.social">
                   <fa-icon [icon]="link.icon" size="2x"></fa-icon>
-                  <input *ngIf="!!(prefills?.links && prefills.links![link.key])" [value]="prefills.links![link.key]" type="url" class="text-input" (keyup)="onSocialLinkChanged($event, link.key)">
-                  <input *ngIf="!(prefills?.links && prefills.links![link.key])" type="url" class="text-input" (keyup)="onSocialLinkChanged($event, link.key)">
+                  <input [(ngModel)]="findSocialLink(link.key).link" type="url" class="text-input">
                 </div>
               </div>
             </div>
