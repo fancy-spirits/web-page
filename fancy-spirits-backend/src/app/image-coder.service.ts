@@ -8,7 +8,7 @@ export class ImageCoderService {
 
   constructor() { }
 
-  stringToBuffer(base64?: string) {
+  stringToBuffer = (base64?: string): Uint8Array | undefined => {
     if (!base64) {
       return;
     }
@@ -21,12 +21,12 @@ export class ImageCoderService {
     return buffer;  
   }
 
-  bufferToSanitizedString(sanitizer: DomSanitizer, buffer: any): SafeResourceUrl {
+  bufferToSanitizedString = (sanitizer: DomSanitizer, buffer: any): SafeResourceUrl => {
     const asStr = this.bufferToString(buffer);
     return sanitizer.bypassSecurityTrustResourceUrl(asStr);
   }
   
-  bufferToString(buffer: any): string {
+  bufferToString = (buffer: any): string => {
       const imageB64_coded = Object.keys(buffer?.data ?? {}).reduce(
         (prev, curr) => prev + String.fromCharCode(buffer.data[curr]), 
       "");
@@ -34,7 +34,7 @@ export class ImageCoderService {
       return `data:image/png;charset=utf-8;base64,${imageB64}`;
   }
 
-  stringToSanitizedString(sanitizer: DomSanitizer, str: string): SafeResourceUrl {
+  stringToSanitizedString = (sanitizer: DomSanitizer, str: string): SafeResourceUrl => {
     return sanitizer.bypassSecurityTrustResourceUrl(`data:image/png;charset=utf-8;base64,${str}`);
   }
 }
