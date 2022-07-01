@@ -1,3 +1,4 @@
+import { jsonToBuffer } from "../bufferUtil";
 import { Artist, Release, SocialLink } from "../entities";
 import { DB } from "../pg";
 
@@ -7,14 +8,17 @@ export async function updateArtist(artist: Partial<Artist>, name: string) {
     const queryStatementArtist = `SELECT FROM artists WHERE name = $1`;
     const existingArtistResult = await db.querySingle(queryStatementArtist, [name]);
     const existingArtist: Artist = existingArtistResult.rows[0];
+    console.log(artist.picture);
+    
+    const newPicture = !!artist.picture ? jsonToBuffer(artist.picture) : undefined;
     const updatedArtist = {
         ...{biography: artist.biography ?? existingArtist.biography},
         ...{name: artist.name ?? existingArtist.name},
-        ...{picture: artist.picture ?? existingArtist.picture},
+        ...{picture: newPicture ?? existingArtist.picture},
         // ...{socialLinks: artist.socialLinks ?? existingArtist.socialLinks},
     };
     const updateStatementArtist = `UPDATE artists SET biography = $1, name = $2, picture = $3 WHERE name = $4`;
-    const updatedArtistResult = await db.querySingle(updateStatementArtist, [updatedArtist.biography, updatedArtist.name, Buffer.from(updatedArtist.picture), name]); 
+    const updatedArtistResult = await db.querySingle(updateStatementArtist, [updatedArtist.biography, updatedArtist.name, updatedArtist.picture, name]); 
     return updatedArtistResult.rows[0] as Artist;
 }
 
