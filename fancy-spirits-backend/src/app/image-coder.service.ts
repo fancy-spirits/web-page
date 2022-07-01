@@ -35,6 +35,7 @@ export class ImageCoderService {
   }
 
   stringToSanitizedString = (sanitizer: DomSanitizer, str: string): SafeResourceUrl => {
-    return sanitizer.bypassSecurityTrustResourceUrl(`data:image/png;charset=utf-8;base64,${str}`);
+    const finalStr =  str.indexOf(",") === -1 ? `data:image/png;charset=utf-8;base64,${str}` : str;
+    return sanitizer.bypassSecurityTrustResourceUrl(finalStr);
   }
 }
