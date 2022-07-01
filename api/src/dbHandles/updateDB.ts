@@ -5,6 +5,9 @@ import { DB } from "../pg";
 const db = DB.getInstance();
 
 export async function updateArtist(artist: Partial<Artist>, name: string) {
+    if (!name) {
+        throw "Artist name must be provided";
+    }
     const queryStatementArtist = `SELECT FROM artists WHERE name = $1`;
     const existingArtistResult = await db.querySingle(queryStatementArtist, [name]);
     const existingArtist: Artist = existingArtistResult.rows[0];
