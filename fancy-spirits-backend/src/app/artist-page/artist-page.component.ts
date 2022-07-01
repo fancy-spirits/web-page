@@ -80,7 +80,7 @@ export class ArtistPageComponent implements OnInit {
   }
 
   onEditArtist(id: string) {
-    (this.visibleModal as ComponentRef<AddArtistModalComponent>).instance.cancel();
+    (this.visibleModal as ComponentRef<AddArtistModalComponent>)?.instance.cancel();
     const modal = this.modalAdd.createComponent(AddArtistModalComponent);
     modal.instance.artistOutput.subscribe(this.onArtistCreated);
     modal.instance.mode = "edit";
