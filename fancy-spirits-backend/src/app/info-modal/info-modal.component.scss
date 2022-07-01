@@ -1,7 +1,7 @@
 .outer-wrapper {
     @apply overflow-x-hidden overflow-y-auto fixed inset-0  outline-none focus:outline-none justify-center items-center flex;
     z-index: 100;
-
+    
     .middle-wrapper {
         @apply relative w-auto my-6 mx-auto;
         max-width: 70%;
