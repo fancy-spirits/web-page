@@ -1,5 +1,5 @@
 import { jsonToBuffer } from "../bufferUtil";
-import { Artist, Release, SocialLink } from "../entities";
+import { Artist, Release, SocialLink, User } from "../entities";
 import { DB } from "../pg";
 
 const db = DB.getInstance();
@@ -20,9 +20,34 @@ export async function updateArtist(artist: Partial<Artist>, name: string) {
         ...{socialLinks: existingArtist.socialLinks},
         // ...{socialLinks: artist.socialLinks ?? existingArtist.socialLinks},
     };
+    if (!!artist.mail && existingArtist.mail !== artist.mail) {
+        await updateUser({
+            id: existingArtistResult.rows[0].user,
+            privateMail: artist.mail
+        });
+    }
     const updateStatementArtist = `UPDATE artists SET biography = $1, name = $2, picture = $3 WHERE name = $4`;
     const updatedArtistResult = await db.querySingle(updateStatementArtist, [updatedArtist.biography, updatedArtist.name, updatedArtist.picture, name]); 
     return updatedArtistResult.rows[0] as Artist;
+}
+
+async function updateUser(user: Partial<User>) {
+    if (!user.id) {
+        throw "Can't update user that has no id";
+    }
+    const queryStatementUser = `SELECT * FROM users WHERE id = $1`;
+    const existingUserResult = await db.querySingle(queryStatementUser, [user.id]);
+    const existingUser: User = existingUserResult.rows[0];
+
+    const updatedUser: User = {
+        ...{privateMail: user.privateMail ?? existingUser.privateMail},
+        ...{pwd_hash: user.pwd_hash ?? existingUser.pwd_hash},
+        ...{salt: user.salt ?? existingUser.salt},
+        role: existingUser.role
+    };
+    const updateStatement = `UPDATE users SET private_mail = $1, pwd_hash = $2, salt = $3 WHERE id = $4`;
+    const updatedUserResult = await db.querySingle(updateStatement, [updatedUser.privateMail, updatedUser.pwd_hash, updatedUser.salt, user.id]);
+    return updatedUserResult.rows[0] as User;
 }
 
 export async function updateRelease(release: Partial<Release>, id: string) {
