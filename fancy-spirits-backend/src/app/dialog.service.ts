@@ -1,4 +1,5 @@
 import { Injectable, ViewContainerRef } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
 import { ConfirmationModalComponent } from './confirmation-modal/confirmation-modal.component';
 
 @Injectable({
@@ -8,11 +9,11 @@ export class DialogService {
 
   constructor() { }
 
-  showConfirmationDialog(rootComponent: ViewContainerRef, title: string, message: string): Promise<boolean> {
+  showConfirmationDialog(sanitizer: DomSanitizer, rootComponent: ViewContainerRef, title: string, message: string): Promise<boolean> {
     return new Promise((res) => {
       const dialog = rootComponent.createComponent(ConfirmationModalComponent);
       dialog.instance.title = title;
-      dialog.instance.message = message;
+      dialog.instance.message = sanitizer.bypassSecurityTrustHtml(message);
       dialog.instance.dialogSubmitted.subscribe(submitStatus => {
         dialog.destroy();
         res(submitStatus === "yes");

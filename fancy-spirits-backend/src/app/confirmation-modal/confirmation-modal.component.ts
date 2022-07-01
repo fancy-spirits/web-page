@@ -1,4 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { SafeHtml } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-confirmation-modal',
@@ -8,7 +9,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 export class ConfirmationModalComponent implements OnInit {
 
   title!: string;
-  message!: string;
+  message!: SafeHtml;
 
   @Output() dialogSubmitted = new EventEmitter<ConfirmationResult>();
 

@@ -92,9 +92,8 @@ export class ArtistPageComponent implements OnInit {
   }
 
   async onDeleteArtist(artist: Artist) {
-    const message = `Do you really want to fire ${artist.name}?
-    All solo releases will be deleted, too! `;
-    const deleteArtist = await this.dialogService.showConfirmationDialog(this.confirmationDialog, "Attention", message);
+    const message = `Do you really want to fire ${artist.name}?<br>All solo releases will be deleted, too!`;
+    const deleteArtist = await this.dialogService.showConfirmationDialog(this.sanitizer, this.confirmationDialog, "Attention", message);
     
     if (!deleteArtist) {
       return;
@@ -102,7 +101,10 @@ export class ArtistPageComponent implements OnInit {
 
     this.httpClient.delete(this.api.generateURL(`/artists/${artist.name}`), {observe: "response"})
       .subscribe({
-        next: () => alert(`${artist.name} was fired sucessfully`),
+        next: () => {
+          this.loadArtists();
+          alert(`${artist.name} was fired sucessfully`);
+        },
         error: () => alert(`${artist.name} could not be fired…`)
       });
   }
