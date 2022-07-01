@@ -8,12 +8,14 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { HttpClientModule } from "@angular/common/http";
 import { FormsModule } from '@angular/forms';
 import { ConfirmationModalComponent } from './confirmation-modal/confirmation-modal.component';
+import { InfoModalComponent } from './info-modal/info-modal.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     NavigationPaneComponent,
-    ConfirmationModalComponent
+    ConfirmationModalComponent,
+    InfoModalComponent
   ],
   imports: [
     BrowserModule,

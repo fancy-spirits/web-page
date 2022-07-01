@@ -1,6 +1,7 @@
 import { Injectable, ViewContainerRef } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ConfirmationModalComponent } from './confirmation-modal/confirmation-modal.component';
+import { InfoModalComponent } from './info-modal/info-modal.component';
 
 @Injectable({
   providedIn: 'root'
@@ -18,6 +19,18 @@ export class DialogService {
         dialog.destroy();
         res(submitStatus === "yes");
       })
-    })
+    });
+  }
+
+  showInfoDialog(sanitizer: DomSanitizer, rootComponent: ViewContainerRef, title: string, message: string) {
+    return new Promise((res: (value: void) => void) => {
+      const dialog = rootComponent.createComponent(InfoModalComponent);
+      dialog.instance.title = title;
+      dialog.instance.message = sanitizer.bypassSecurityTrustHtml(message);
+      dialog.instance.dialogSubmitted.subscribe(() => {
+        dialog.destroy();
+        res();
+      })
+    });
   }
 }

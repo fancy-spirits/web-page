@@ -1,5 +1,5 @@
 .outer-wrapper {
-    @apply overflow-x-hidden overflow-y-auto fixed inset-0 outline-none focus:outline-none justify-center items-center flex;
+    @apply overflow-x-hidden overflow-y-auto fixed inset-0  outline-none focus:outline-none justify-center items-center flex;
     z-index: 100;
 
     .middle-wrapper {
@@ -8,7 +8,7 @@
         
         .inner-wrapper {
             @apply border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none;
-            width: 20em;
+            width: 15em;
 
             .header {
                 @apply flex items-start justify-between p-3 border-b border-solid border-slate-200 rounded-t;
@@ -16,6 +16,12 @@
                 h3 {
                     font-weight: 300;
                     font-size: 1.5em;
+                }
+
+                button {
+                    @apply p-1 mr-2 ml-auto bg-transparent border-0 text-gray-400 hover:text-gray-800 text-2xl;
+                    font-weight: 300;
+                    transition: .33s;
                 }
             }
 

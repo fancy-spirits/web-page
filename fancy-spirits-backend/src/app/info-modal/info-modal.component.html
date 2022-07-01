@@ -1,4 +1,4 @@
-<div class="outer-wrapper" (click)="onNo()">
+<div class="outer-wrapper" (click)="onOk()">
     <div class="middle-wrapper">
       <!--content-->
       <div class="inner-wrapper">
@@ -7,11 +7,11 @@
           <h3>
             {{ title }}
           </h3>
-          <!-- <button (click)="cancel()">
+          <button (click)="onOk()">
               <span>
                   x
               </span>
-          </button> -->
+          </button>
         </div>
         <!-- body -->
         <div class="body">
@@ -19,15 +19,12 @@
         </div>
         <!--footer-->
         <div class="footer">
-          <button class="secondary" type="button" (click)="onNo()">
-            No
-          </button>
-          <button class="primary" type="button" (click)="onYes()">
-            Yes
+          <button class="primary" type="button" (click)="onOk()">
+            Okey
           </button>
         </div>
       </div>
     </div>
   </div>
-  <div class="black-box" (click)="onNo()"></div>
+  <div class="black-box" (click)="onOk()"></div>
   

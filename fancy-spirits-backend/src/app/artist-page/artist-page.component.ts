@@ -70,7 +70,8 @@ export class ArtistPageComponent implements OnInit {
         this.visibleModal = undefined;
         break;
       case false:
-        alert(`${mode === "add" ? "Creation failed" : "Editing artist failed"}`);
+        const message = `${mode === "add" ? "Creation failed!" : "Editing artist failed!"}`
+        this.dialogService.showInfoDialog(this.sanitizer, this.confirmationDialog, "Error", message);
     }
   }
 
@@ -103,9 +104,9 @@ export class ArtistPageComponent implements OnInit {
       .subscribe({
         next: () => {
           this.loadArtists();
-          alert(`${artist.name} was fired sucessfully`);
+          this.dialogService.showInfoDialog(this.sanitizer, this.confirmationDialog, "Info", `${artist.name} was fired sucessfully`);
         },
-        error: () => alert(`${artist.name} could not be fired…`)
+        error: () =>this.dialogService.showInfoDialog(this.sanitizer, this.confirmationDialog, "Info", `${artist.name} could not be fired…`)
       });
   }
 }
