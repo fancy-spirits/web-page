@@ -1,1 +1,68 @@
-<p>release-page works!</p>
+<ng-template #modalAddRelease></ng-template>
+<ng-template #confirmationDialog></ng-template>
+<div class="page-header">
+    <h1>Releases</h1>
+</div>
+
+<div class="toolbar">
+    <button (click)="onNewRelease()">New</button>
+</div>
+
+<div class="artist-table flex flex-col">
+    <div class="overflow-x-auto sm:-mx-6 lg:-mx-8">
+      <div class="inline-block min-w-full sm:px-6 lg:px-8">
+        <div class="overflow-hidden">
+          <table class="min-w-full text-center">
+            <thead class="border-b bg-gray-800">
+              <tr>
+                <th scope="col" class="text-sm font-medium text-white px-6 py-4">
+                </th>
+                <th scope="col" class="text-sm font-medium text-white px-6 py-4">
+                  Artist(s)
+                </th>
+                <th scope="col" class="text-sm font-medium text-white px-6 py-4">
+                  Title
+                </th>
+                <th scope="col" class="text-sm font-medium text-white px-6 py-4">
+                  Type
+                </th>
+                <th scope="col" class="text-sm font-medium text-white px-6 py-4">
+                  Release Date
+                </th>
+                <th scope="col" class="text-sm font-medium text-white px-6 py-4">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="bg-white border-b" *ngFor="let release of releases">
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                  <div class="release-image-container">
+                    <img class="release-image" [src]="toBase64(this.sanitizer, release.artwork)">
+                  </div>  
+                </td>
+                <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                  <!-- {{release.artists}} -->
+                </td>
+                <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                  {{release.name}}
+                </td>
+                <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                  {{release.release_type}}
+                </td>
+                <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                  {{release.release_date}}
+                </td>
+                <td>
+                  <div class="actions-container">
+                    <a (click)="onEditRelease(release.id!)"><fa-icon [classes]="['action-icon']" [icon]="iconEdit"></fa-icon></a>
+                    <a (click)="onDeleteRelease(release)"><fa-icon [classes]="['action-icon']" [icon]="iconDelete"></fa-icon></a>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>

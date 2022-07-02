@@ -28,8 +28,6 @@ export class ArtistPageComponent implements OnInit {
   AddArtistModalComponent = AddArtistModalComponent;
   visibleModal?: ComponentRef<any> = undefined;
 
-  addArtistModalVisible = false;
-
   constructor(
     private httpClient: HttpClient, 
     private api: APIConnectorService, 
@@ -60,7 +58,7 @@ export class ArtistPageComponent implements OnInit {
       });
   }
 
-  onArtistCreated = (success: boolean | "cancel", mode: "add" | "edit") => {
+  onArtistCreated = ([success, mode]: [success: boolean | "cancel", mode: "add" | "edit"]) => {
     switch (success) {
       // @ts-expect-error
       case true:

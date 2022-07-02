@@ -9,6 +9,7 @@ import { HttpClientModule } from "@angular/common/http";
 import { FormsModule } from '@angular/forms';
 import { ConfirmationModalComponent } from './confirmation-modal/confirmation-modal.component';
 import { InfoModalComponent } from './info-modal/info-modal.component';
+import { ImgUploaderModule } from './img-uploader/img-uploader.module';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { InfoModalComponent } from './info-modal/info-modal.component';
     AppRoutingModule,
     FontAwesomeModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    ImgUploaderModule
   ],
   providers: [],
   bootstrap: [AppComponent]

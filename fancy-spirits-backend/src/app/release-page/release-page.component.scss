@@ -1,0 +1,55 @@
+
+.toolbar {
+    @apply bg-slate-300 px-4 py-4;
+
+    button {
+        @apply bg-slate-400 px-3 py-2 rounded-md text-gray-200;
+        font-weight: 600;
+        transition: .33s;
+
+        &:hover {
+            @apply bg-slate-600;
+        }
+    }
+}
+
+.artist-table {
+    margin-top: 0 !important;
+    overflow-x: hidden;
+
+    .artist-image-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        .artist-image {
+            max-height: 2.5em;
+        }
+    }
+
+    .socialLink-container {
+        display: flex;
+        justify-content: center;
+
+        a {
+            @apply m-3;
+        }
+    }
+
+    .actions-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        a {
+            @apply m-3;
+            cursor: pointer;
+
+            .action-icon {
+                @apply text-slate-500 hover:text-slate-700;
+                width: 1.5em;
+                height: 1.5em;
+            }
+        }
+    }
+}

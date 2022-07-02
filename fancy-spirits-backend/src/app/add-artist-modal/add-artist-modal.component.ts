@@ -21,22 +21,17 @@ export class AddArtistModalComponent implements OnInit {
   artistInput?: Artist;
 
   @Output()
-  artistOutput = new EventEmitter<boolean | "cancel">();
+  artistOutput = new EventEmitter<[boolean | "cancel", "add" | "edit"]>();
 
   artistName?: string;
   biography?: string;
   picture?: string;
   mail?: string;
-  // artistName: string = "";
-  // biography: string = "";
-  // pictureFile?: ArrayBuffer;
-  // mail: string = "";
 
   socialLinks!: SocialLink[];
 
   submitBtnCaption!: string;
   title!: string;
-  // prefills!: Prefills;
 
   onSave = () => {
     if (this.mode === "add") {
@@ -59,7 +54,7 @@ export class AddArtistModalComponent implements OnInit {
       || !this.biography ||this.biography.trim().length === 0 
       || !this.picture || this.picture.trim().length === 0 
       || !this.mail || this.mail.trim().length === 0) {
-        this.artistOutput.emit(false);
+        this.artistOutput.emit([false, this.mode]);
         return;
     }
     const artist: Artist = {
@@ -73,9 +68,9 @@ export class AddArtistModalComponent implements OnInit {
     this.httpClient.post(this.api.generateURL("/artists"), artist, { observe: "response"})
       .subscribe({
         next: response => {
-          this.artistOutput.emit(response.status < 400);
+          this.artistOutput.emit([response.status < 400, this.mode]);
         },
-        error: _error => this.artistOutput.emit(false)
+        error: _error => this.artistOutput.emit([false, this.mode])
       });
   }
 
@@ -85,7 +80,7 @@ export class AddArtistModalComponent implements OnInit {
       || !this.biography ||this.biography.trim().length === 0 
       || !this.picture || this.picture.trim().length === 0 
       || !this.mail || this.mail.trim().length === 0) {
-        this.artistOutput.emit(false);
+        this.artistOutput.emit([false, this.mode]);
         return;
     }
     const oldImage = this.imageCoder.bufferToString(this.artistInput.picture);
@@ -100,9 +95,9 @@ export class AddArtistModalComponent implements OnInit {
     this.httpClient.patch(this.api.generateURL(`/artists/${this.artistInput!.name}`), artist, {observe: "response"})
       .subscribe({
         next: response => {
-          this.artistOutput.emit(response.status < 400);
+          this.artistOutput.emit([response.status < 400, this.mode]);
         },
-        error: _error => this.artistOutput.emit(false)
+        error: _error => this.artistOutput.emit([false, this.mode])
       });
   }
 
@@ -111,14 +106,14 @@ export class AddArtistModalComponent implements OnInit {
   }
 
   cancel() {
-    this.artistOutput.emit("cancel");
+    this.artistOutput.emit(["cancel", this.mode]);
   }
 
   constructor(
     private httpClient: HttpClient, 
     private api: APIConnectorService, 
-    public sanitizer: DomSanitizer,
-    public imageCoder: ImageCoderService
+    protected sanitizer: DomSanitizer,
+    protected imageCoder: ImageCoderService
   ) { }
 
   initCreate() {
