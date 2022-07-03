@@ -7,6 +7,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { FormsModule } from '@angular/forms';
 import { AddReleaseModalComponent } from '../add-release-modal/add-release-modal.component';
 import { ImgUploaderModule } from '../img-uploader/img-uploader.module';
+import { MultiSelectComponentModule } from '../multi-select/multi-select.module';
 
 
 @NgModule({
@@ -19,7 +20,8 @@ import { ImgUploaderModule } from '../img-uploader/img-uploader.module';
     ReleasePageRoutingModule,
     FontAwesomeModule,
     FormsModule,
-    ImgUploaderModule
+    ImgUploaderModule,
+    MultiSelectComponentModule
   ]
 })
 export class ReleasePageModule { }

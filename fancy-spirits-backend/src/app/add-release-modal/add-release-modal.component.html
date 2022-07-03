@@ -37,19 +37,21 @@
 
               <div class="input-element">
                 <label for="release-type">Release Type: </label>
-                <select [(ngModel)]="releaseType" class="text-input" name="release-type" de>
+                <!-- <select [(ngModel)]="releaseType" class="text-input" name="release-type" de>
                     <option value="single">Single</option>
                     <option value="ep">EP</option>
                     <option value="album">Album</option>
-                </select>
+                </select> -->
+                <app-multi-select class="text-input" placeholder="Select Type" [data]="optionReleaseTypes" selectionMode="single">
+                </app-multi-select>
               </div>
 
               <div class="input-element">
                 <label for="artists">Artist(s): </label>
-                <select [(ngModel)]="releaseArtists" class="text-input" name="artists" multiple>
-                    <option *ngFor="let artist of optionArtists" [value]="artist">{{artist.name}}</option>
-                </select>
+                <app-multi-select class="text-input" placeholder="Select Artist" [data]="optionArtists">
+                </app-multi-select>
               </div>
+
   
             </div>
             <div class="imageSection">

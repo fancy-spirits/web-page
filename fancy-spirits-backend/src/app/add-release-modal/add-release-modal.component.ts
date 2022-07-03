@@ -34,7 +34,50 @@ export class AddReleaseModalComponent implements OnInit {
   
   protected releaseArtists: Artist[] = [];
 
-  protected optionArtists!: Artist[];
+  protected optionArtists: Artist[] = [
+    {
+      name: "doxbleK",
+      biography: "Some content",
+      mail: "konrad.koschel@hotmail.de",
+      picture: new ArrayBuffer(10),
+      socialLinks: [],
+      id: "123"
+    },
+    {
+      name: "doxbleD",
+      biography: "Some content",
+      mail: "konrad.koschel@hotmail.de",
+      picture: new ArrayBuffer(10),
+      socialLinks: [],
+      id: "124"
+    },
+    {
+      name: "doxbleH",
+      biography: "Some content",
+      mail: "konrad.koschel@hotmail.de",
+      picture: new ArrayBuffer(10),
+      socialLinks: [],
+      id: "134"
+    },
+    {
+      name: "doxbleI",
+      biography: "Some content",
+      mail: "konrad.koschel@hotmail.de",
+      picture: new ArrayBuffer(10),
+      socialLinks: [],
+      id: "234"
+    },
+    {
+      name: "doxbleJ",
+      biography: "Some content",
+      mail: "konrad.koschel@hotmail.de",
+      picture: new ArrayBuffer(10),
+      socialLinks: [],
+      id: "12345"
+    },
+  ];
+
+  optionReleaseTypes = [{id: "single", name: "Single"}, {id: "ep", name: "EP"}, {id: "album", name: "Album"}];
   
   submitBtnCaption!: string;
   title!: string;
