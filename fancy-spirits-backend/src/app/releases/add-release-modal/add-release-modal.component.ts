@@ -1,11 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild, ViewContainerRef } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import { APIConnectorService } from '../apiconnector.service';
-import { DialogService } from '../dialog.service';
-import { Artist, Release, ReleaseItem } from '../entities';
-import { ImageCoderService } from '../image-coder.service';
-import socialLinkIcons from "../socialMedia";
+import { APIConnectorService } from '../../shared/services/apiconnector.service';
+import { DialogService } from '../../shared/services/dialog.service';
+import { Artist, Release, ReleaseItem } from '../../entities';
+import { ImageCoderService } from 'src/app/shared/components/img-uploader/image-coder.service';
+import socialLinkIcons from "../../socialMedia";
 import { faAdd } from "@fortawesome/free-solid-svg-icons";
 
 @Component({

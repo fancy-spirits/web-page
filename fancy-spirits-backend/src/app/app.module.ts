@@ -7,16 +7,14 @@ import { NavigationPaneComponent } from './navigation-pane/navigation-pane.compo
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { HttpClientModule } from "@angular/common/http";
 import { FormsModule } from '@angular/forms';
-import { ConfirmationModalComponent } from './confirmation-modal/confirmation-modal.component';
-import { InfoModalComponent } from './info-modal/info-modal.component';
-import { ImgUploaderModule } from './img-uploader/img-uploader.module';
+import { SharedModule } from './shared/shared.module';
+import { ArtistsModule } from './artists/artists.module';
+import { ReleasePageModule } from './releases/release-page.module';
 
 @NgModule({
   declarations: [
     AppComponent,
-    NavigationPaneComponent,
-    ConfirmationModalComponent,
-    InfoModalComponent
+    NavigationPaneComponent
   ],
   imports: [
     BrowserModule,
@@ -24,7 +22,9 @@ import { ImgUploaderModule } from './img-uploader/img-uploader.module';
     FontAwesomeModule,
     HttpClientModule,
     FormsModule,
-    ImgUploaderModule
+    SharedModule,
+    ArtistsModule,
+    ReleasePageModule
   ],
   providers: [],
   bootstrap: [AppComponent]

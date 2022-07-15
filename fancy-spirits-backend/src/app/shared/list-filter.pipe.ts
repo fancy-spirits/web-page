@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { ListItem } from './multi-select/multi-select.component';
+import { ListItem } from './components/multi-select/multi-select.component';
 
 @Pipe({
   name: 'listFilter'

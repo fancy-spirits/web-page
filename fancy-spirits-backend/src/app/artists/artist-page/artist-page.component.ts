@@ -1,13 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, ComponentRef, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
-import { APIConnectorService } from '../apiconnector.service';
-import { Artist } from '../entities';
-import { ImageCoderService } from '../image-coder.service';
-import socialMediaIcons from "../socialMedia";
+import { APIConnectorService } from '../../shared/services/apiconnector.service';
+import { Artist } from '../../entities';
+import { ImageCoderService } from '../../shared/components/img-uploader/image-coder.service';
+import socialMediaIcons from "../../socialMedia";
 import { DomSanitizer } from '@angular/platform-browser';
 import { faPenToSquare, faTrashCan } from '@fortawesome/free-regular-svg-icons';
 import { AddArtistModalComponent } from '../add-artist-modal/add-artist-modal.component';
-import { DialogService } from '../dialog.service';
+import { DialogService } from '../../shared/services/dialog.service';
 
 @Component({
   selector: 'app-artist-page',

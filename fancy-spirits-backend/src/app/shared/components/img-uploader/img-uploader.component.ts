@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { ImageCoderService } from '../image-coder.service';
+import { ImageCoderService } from './image-coder.service';
 
 @Component({
   selector: 'app-img-uploader',

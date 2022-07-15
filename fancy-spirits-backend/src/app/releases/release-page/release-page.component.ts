@@ -3,10 +3,10 @@ import { Component, ComponentRef, OnInit, ViewChild, ViewContainerRef } from '@a
 import { DomSanitizer } from '@angular/platform-browser';
 import { faPenToSquare, faTrashCan } from '@fortawesome/free-regular-svg-icons';
 import { AddReleaseModalComponent } from '../add-release-modal/add-release-modal.component';
-import { APIConnectorService } from '../apiconnector.service';
-import { DialogService } from '../dialog.service';
-import { Release } from '../entities';
-import { ImageCoderService } from '../image-coder.service';
+import { APIConnectorService } from '../../shared/services/apiconnector.service';
+import { DialogService } from '../../shared/services/dialog.service';
+import { Release } from '../../entities';
+import { ImageCoderService } from 'src/app/shared/components/img-uploader/image-coder.service';
 
 @Component({
   selector: 'app-release-page',

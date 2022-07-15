@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ReleasePageComponent } from './release-page.component';
+import { ReleasePageComponent } from './release-page/release-page.component';
 
 const routes: Routes = [{ path: '', component: ReleasePageComponent }];
 

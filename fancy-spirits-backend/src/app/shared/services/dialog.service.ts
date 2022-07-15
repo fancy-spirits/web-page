@@ -1,11 +1,9 @@
 import { Injectable, ViewContainerRef } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import { ConfirmationModalComponent } from './confirmation-modal/confirmation-modal.component';
-import { InfoModalComponent } from './info-modal/info-modal.component';
+import { ConfirmationModalComponent } from '../components/confirmation-modal/confirmation-modal.component';
+import { InfoModalComponent } from '../components/info-modal/info-modal.component';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class DialogService {
 
   constructor() { }

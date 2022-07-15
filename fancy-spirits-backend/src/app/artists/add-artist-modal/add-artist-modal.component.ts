@@ -1,10 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import { APIConnectorService } from '../apiconnector.service';
-import { Artist, SocialLink } from '../entities';
-import socialLinkIcons from "../socialMedia";
-import { ImageCoderService } from "../image-coder.service";
+import { APIConnectorService } from '../../shared/services/apiconnector.service';
+import { Artist, SocialLink } from '../../entities';
+import socialLinkIcons from "../../socialMedia";
+import { ImageCoderService } from "../../shared/components/img-uploader/image-coder.service";
 
 @Component({
   selector: 'app-add-artist-modal',
