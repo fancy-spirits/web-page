@@ -59,30 +59,51 @@
                         @apply py-5;
                     }
 
-                    .socialSection {
+                    .release-item-section {
                         grid-area: social;
                         @apply px-7;
                         @apply py-5;
 
-                        .link-grid {
-                            display: grid;
-                            grid-template-columns: 1fr 1fr;
-                        }
-
-                        .link-container {
+                        .toolbar {
                             display: flex;
-                            flex-direction: column;
-                            justify-content: flex-start;
+                            justify-content: space-between;
                             align-items: center;
 
-                            .social-link {
-                                @apply m-2;
-                                display: flex;
-                                justify-content: space-between;
+                            button {
+                                font-size: 2em;
+                                font-weight: 200;
+                                transition: .33s;
+                                @apply text-gray-300 hover:text-gray-600;
+                            }
+                        }
 
-                                input {
-                                    @apply p-1;
-                                }
+                        .release-item {
+                            display: grid;
+                            grid-template-areas: 
+                                "index name name name name name"
+                                "index genre genre genre genre genre";
+                            gap: .5em;
+                            @apply p-5 border-slate-400;
+
+
+                            .release-item-index {
+                                grid-area: index;
+
+                                display: flex;
+                                align-items: center;
+                                justify-content: left;
+                                font-weight: 600;
+                                font-size: 2em;
+                                user-select: none;
+                                @apply text-slate-700;
+                            }
+
+                            .release-item-name {
+                                grid-area: name;
+                            }
+
+                            .release-item-genre {
+                                grid-area: genre;
                             }
                         }
                     }

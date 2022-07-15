@@ -37,11 +37,6 @@
 
               <div class="input-element">
                 <label for="release-type">Release Type: </label>
-                <!-- <select [(ngModel)]="releaseType" class="text-input" name="release-type" de>
-                    <option value="single">Single</option>
-                    <option value="ep">EP</option>
-                    <option value="album">Album</option>
-                </select> -->
                 <app-multi-select class="text-input" placeholder="Select Type" [data]="optionReleaseTypes" selectionMode="single">
                 </app-multi-select>
               </div>
@@ -58,8 +53,26 @@
               <h1 class="formHeader">Release Artwork</h1>
               <app-img-uploader [(content)]="artwork" class="inputElement"></app-img-uploader>
             </div>
-            <div class="socialSection">
-              <h1 class="formHeader">Tracks</h1>
+            <div class="release-item-section">
+              <div class="toolbar">
+                <h1 class="formHeader">Tracks</h1>
+                <button (click)="onAddReleaseItem()"><fa-icon [icon]="plusIcon"></fa-icon></button>
+              </div>
+              <!-- <button (click)="onAddReleaseItem()" *ngIf="releaseType === 'ep' || releaseType === 'album'">+</button> -->
+              <div class="release-item-grid">
+                <div class="release-item" *ngFor="let item of releaseItems; index as index">
+                  <span class="release-item-index">{{index+1}}.</span>
+                  <div class="input-element release-item-name">
+                    <label for="release-item-name">Song name: </label>
+                    <input [(ngModel)]="item.name" class="text-input" type="text" name="release-item-name">
+                  </div>
+                  <div class="input-element release-item-genre">
+                    <label for="release-item-genre">Genre: </label>
+                    <app-multi-select class="text-input" placeholder="Select Genre" [data]="genres">
+                    </app-multi-select>
+                  </div>
+                </div>
+              </div>
               <!-- <div class="link-grid">
                 <div class="link-container">
                   <div class="social-link" *ngFor="let link of socialLinkIcons.streaming">

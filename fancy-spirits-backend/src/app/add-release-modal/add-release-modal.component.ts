@@ -3,9 +3,10 @@ import { Component, EventEmitter, Input, OnInit, Output, ViewChild, ViewContaine
 import { DomSanitizer } from '@angular/platform-browser';
 import { APIConnectorService } from '../apiconnector.service';
 import { DialogService } from '../dialog.service';
-import { Artist, Release } from '../entities';
+import { Artist, Release, ReleaseItem } from '../entities';
 import { ImageCoderService } from '../image-coder.service';
 import socialLinkIcons from "../socialMedia";
+import { faAdd } from "@fortawesome/free-solid-svg-icons";
 
 @Component({
   selector: 'app-add-release-modal',
@@ -14,6 +15,7 @@ import socialLinkIcons from "../socialMedia";
 })
 export class AddReleaseModalComponent implements OnInit {
   socialLinkIcons = socialLinkIcons;
+  plusIcon = faAdd;
 
   @Input()
   mode!: "add" | "edit";
@@ -76,6 +78,9 @@ export class AddReleaseModalComponent implements OnInit {
       id: "12345"
     },
   ];
+
+  protected releaseItems: Partial<ReleaseItem>[] = [{}];
+  protected genres!: string[];
 
   optionReleaseTypes = [{id: "single", name: "Single"}, {id: "ep", name: "EP"}, {id: "album", name: "Album"}];
   
@@ -156,5 +161,9 @@ export class AddReleaseModalComponent implements OnInit {
           next: response => this.releaseOutput.emit([response.status < 400, this.mode]),
           error: () => this.releaseOutput.emit([false, this.mode])
         });
+  }
+
+  onAddReleaseItem() {
+    this.releaseItems.push({});
   }
 }

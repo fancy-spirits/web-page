@@ -27,5 +27,7 @@ export interface Release {
 };
 
 export interface ReleaseItem {
-
+    id?: string;
+    name: string;
+    genre: string;
 }
