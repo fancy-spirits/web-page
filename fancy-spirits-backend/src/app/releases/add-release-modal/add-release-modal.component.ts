@@ -1,12 +1,12 @@
-import { HttpClient } from '@angular/common/http';
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import { APIConnectorService } from '../../shared/services/apiconnector.service';
-import { DialogService } from '../../shared/services/dialog.service';
 import { Artist, Release, ReleaseItem } from '../../entities';
 import { ImageCoderService } from 'src/app/shared/components/img-uploader/image-coder.service';
 import socialLinkIcons from "../../socialMedia";
 import { faAdd } from "@fortawesome/free-solid-svg-icons";
+import { AppState } from 'src/app/store/app.reducer';
+import { Store } from '@ngrx/store';
+import { CreateReleaseActions, UtilReleasesActions } from '../store/releases.actions';
 
 @Component({
   selector: 'app-add-release-modal',
@@ -17,14 +17,7 @@ export class AddReleaseModalComponent implements OnInit {
   socialLinkIcons = socialLinkIcons;
   plusIcon = faAdd;
 
-  @Input()
-  mode!: "add" | "edit";
-
-  @Input("release")
   releaseInput?: Release;
-  
-  @Output()
-  releaseOutput = new EventEmitter<[boolean | "cancel", "add" | "edit"]>();
 
   @ViewChild("confirmationDialog", {read: ViewContainerRef}) confirmationDialog!: ViewContainerRef;
   
@@ -86,52 +79,44 @@ export class AddReleaseModalComponent implements OnInit {
   
   submitBtnCaption!: string;
   title!: string;
+
+  onSave!: () => void;
   
   constructor(
-    private httpClient: HttpClient, 
-    private api: APIConnectorService, 
     protected sanitizer: DomSanitizer,
     protected imageCoder: ImageCoderService,
-    private dialogService: DialogService
+    private store: Store<AppState>
   ) { }
 
   ngOnInit(): void {
-    this.loadArtists();
-    switch (this.mode) {
-      case "add": 
-        this.initCreate(); break;
-      case "edit":
-        throw "Not yet implemented!";
-        // this.initEdit(); break;
-      default: 
-        throw "Mode must be set!";
+    this.store.subscribe(({ artists, releases }) => {
+      this.optionArtists = artists.artists;
+      switch (releases.dialog.mode) {
+        case "add":
+          this.submitBtnCaption = "Add";
+          this.title = "Add Release";
+          this.onSave = this.onCreateNewRelease.bind(this);
+          break;
+        case "edit":
+          this.initEdit();
+          this.onSave = this.onUpdateRelease.bind(this);
+          break;
+      }
+    });
+  }
+
+  initEdit() {
+    // Verify mandatory input
+    if (!this.releaseInput) {
+      throw "In Edit Mode, a user needs to be passed!";
     }
-  }
-
-  initCreate() {
-    this.submitBtnCaption = "Add";
-    this.title = "Add Release";
-  }
-
-  loadArtists = () => {
-    this.httpClient.get(this.api.generateURL("/artists"), {observe: "body"})
-      .subscribe({
-        next: body => this.optionArtists = body as Artist[],
-        error: () => this.dialogService.showInfoDialog(this.sanitizer, this.confirmationDialog, "Error", "Artists could not be loaded!")
-      });
+    // Initialize UI
+    this.submitBtnCaption = "Edit";
+    this.title = `Edit ${this.releaseInput.name}`;
   }
 
   cancel() {
-    this.releaseOutput.emit(["cancel", this.mode]);
-  }
-
-  onSave() {
-    if (this.mode === "add") {
-      this.onCreateNewRelease();
-    } else {
-      throw "Not yet implemented!";
-      // this.onUpdateArtist();
-    }
+    this.store.dispatch(UtilReleasesActions.CANCEL_RELEASE_DIALOG());
   }
 
   onCreateNewRelease() {
@@ -141,7 +126,9 @@ export class AddReleaseModalComponent implements OnInit {
       || !this.artwork || this.artwork.trim.length === 0
       || !this.releaseType || this.releaseType.trim.length === 0
       || !this.releaseArtists  || this.releaseArtists.length === 0) {
-        this.releaseOutput.emit([false, this.mode]);
+        this.store.dispatch(CreateReleaseActions.CREATE_RELEASE_ERROR({
+          errorMsg: "All fields are required!"
+        }));
         return;
       }
 
@@ -156,11 +143,11 @@ export class AddReleaseModalComponent implements OnInit {
 
       // TODO Release Items
 
-      this.httpClient.post(this.api.generateURL("/releases"), release, {observe: "response"})
-        .subscribe({
-          next: response => this.releaseOutput.emit([response.status < 400, this.mode]),
-          error: () => this.releaseOutput.emit([false, this.mode])
-        });
+      this.store.dispatch(CreateReleaseActions.CREATE_RELEASE({release}));
+  }
+
+  onUpdateRelease() {
+    // TODO
   }
 
   onAddReleaseItem() {

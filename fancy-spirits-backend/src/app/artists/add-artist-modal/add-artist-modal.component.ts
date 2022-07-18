@@ -46,11 +46,11 @@ export class AddArtistModalComponent implements OnInit {
           case "add": 
             this.submitBtnCaption = "Add";
             this.title = "Add Artist"; 
-            this.onSave = this.onUpdateArtist.bind(this);
+            this.onSave = this.onCreateNewArtist.bind(this);
             break;
           case "edit":
             this.initEdit(); 
-            this.onSave = this.onCreateNewArtist.bind(this);
+            this.onSave = this.onUpdateArtist.bind(this);
             break;
         }
         this.artistInput = dialog.artistToBeUpdated;

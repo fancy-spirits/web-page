@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
-import { catchError, EMPTY, map, of, mergeMap } from "rxjs";
+import { catchError, map, of, mergeMap } from "rxjs";
 import { Artist } from "src/app/entities";
 import { APIConnectorService } from "src/app/shared/services/apiconnector.service";
 import { CreateArtistActions, DeleteArtistActions, FetchArtistsActions, UpdateArtistActions } from "./artists.actions";

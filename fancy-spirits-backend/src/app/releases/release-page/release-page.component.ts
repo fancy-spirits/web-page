@@ -1,12 +1,14 @@
-import { HttpClient } from '@angular/common/http';
-import { Component, ComponentRef, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { faPenToSquare, faTrashCan } from '@fortawesome/free-regular-svg-icons';
 import { AddReleaseModalComponent } from '../add-release-modal/add-release-modal.component';
-import { APIConnectorService } from '../../shared/services/apiconnector.service';
 import { DialogService } from '../../shared/services/dialog.service';
 import { Release } from '../../entities';
 import { ImageCoderService } from 'src/app/shared/components/img-uploader/image-coder.service';
+import { AppState } from 'src/app/store/app.reducer';
+import { Store } from '@ngrx/store';
+import { FetchArtistsActions } from 'src/app/artists/store/artists.actions';
+import { DeleteReleaseActions, UtilReleasesActions } from '../store/releases.actions';
 
 @Component({
   selector: 'app-release-page',
@@ -24,58 +26,68 @@ export class ReleasePageComponent implements OnInit {
 
   @ViewChild("modalAddRelease", {read: ViewContainerRef}) modalAdd!: ViewContainerRef;
   AddReleaseModalComponent = AddReleaseModalComponent;
-  visibleModal?: ComponentRef<AddReleaseModalComponent> = undefined;
 
   constructor(
-    private httpClient: HttpClient, 
-    private api: APIConnectorService, 
     private imageCoderService: ImageCoderService,
     protected sanitizer: DomSanitizer,
-    private dialogService: DialogService
+    private dialogService: DialogService,
+    private store: Store<AppState>
   ) { }
 
   ngOnInit(): void {
-    this.loadReleases();
-  }
+    this.store.dispatch(FetchArtistsActions.FETCH_ARTISTS());
 
-  onNewRelease = () => {
-    (this.visibleModal as ComponentRef<AddReleaseModalComponent>)?.instance.cancel();
-    const modal = this.modalAdd.createComponent(AddReleaseModalComponent);
-    modal.instance.releaseOutput.subscribe(this.onReleaseCreated);
-    modal.instance.mode = "add";
-    this.visibleModal = modal;
-  }
+    this.store.select("releases")
+      .subscribe(({releases, dialog}) => {
+        this.releases = releases;
 
-  onEditRelease(id: string) {
+        if (dialog.visible) {
+          this.showReleaseDialog();
+        } else {
+          this.closeReleaseDialog();
+        }
 
-  }
+        if (!!dialog.error) {
+          this.dialogService.showInfoDialog(this.sanitizer, this.confirmationDialog, "Error", dialog.error);
+        }
 
-  onDeleteRelease(release: Release) {
-
-  }
-
-  loadReleases() {
-    this.httpClient.get(this.api.generateURL("/releases"), {observe: "body"})
-      .subscribe({
-        next: body => this.releases = body as Release[],
-        error: () => console.log("Releases could not be loaded.")
+        if(!!dialog.info) {
+          this.dialogService.showInfoDialog(this.sanitizer, this.confirmationDialog, "Info", dialog.info)
+            .then(() => this.store.dispatch(UtilReleasesActions.CLEAR_INFO()));
+        }
       });
   }
 
-  onReleaseCreated = ([success, mode]: [success: boolean | "cancel", mode: "add" | "edit"]) => {
-    if (!this.modalAdd) throw "Weird stuff going on";
+  onNewRelease = () => {
+    this.store.dispatch(UtilReleasesActions.OPEN_RELEASE_DIALOG({
+      mode: "add"
+    }));
+  }
+
+  onEditRelease(id: string) {
+    this.store.dispatch(UtilReleasesActions.OPEN_RELEASE_DIALOG({
+      mode: "edit",
+      releaseToBeUpdated: this.releases.find(release => release.id === id)!
+    }));
+  }
+
+  async onDeleteRelease(release: Release) {
+    const message = `Do you really want to remove ${release.name}?`;
+    const deleteArtist = await this.dialogService.showConfirmationDialog(this.sanitizer, this.confirmationDialog, "Attention", message);
     
-    switch (success) {
-      // @ts-expect-error
-      case true:
-        this.loadReleases();
-      case 'cancel':
-        this.modalAdd.remove(0);
-        this.visibleModal = undefined;
-        break;
-      case false:
-        const message = `${mode === "add" ? "Creation failed!" : "Editing release failed!"}`
-        this.dialogService.showInfoDialog(this.sanitizer, this.confirmationDialog, "Error", message);
+    if (!deleteArtist) {
+      return;
     }
+
+    this.store.dispatch(DeleteReleaseActions.DELETE_RELEASE({release}));
+  }
+
+  showReleaseDialog() {
+    this.modalAdd.clear();
+    this.modalAdd.createComponent(AddReleaseModalComponent);
+  }
+
+  closeReleaseDialog() {
+    this.modalAdd.clear();
   }
 }
