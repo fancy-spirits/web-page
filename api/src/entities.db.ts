@@ -60,4 +60,12 @@ export namespace DBSchema {
         service: string;
         link: string;
     };
+
+    export interface User {
+        id: ID;
+        private_mail: string;
+        pwd_hash: string;
+        salt: string;
+        role: string;
+    };
 }

@@ -73,11 +73,11 @@ export async function getRelease(id: string) {
     return finalRelease;
 }
 
-export async function getUsers() {
+export async function getUsers(): Promise<User[]> {
     const queryStringUsers = `SELECT * FROM users`;
-    const userResults = await db.querySingle(queryStringUsers, []);
+    const users = await db.querySingleTyped<DBSchema.User>(queryStringUsers, []);
 
-    return userResults.rows.map(user => user as User);
+    return users.map(user => ({...user, privateMail: user.private_mail}));
 }
 
 async function assembleRelease(releaseHeader: DBSchema.Release): Promise<Release> {

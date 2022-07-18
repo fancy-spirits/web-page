@@ -22,12 +22,6 @@ export class DB {
         return DB._db;
     }
 
-    async printPrivileges(){
-        const query = `SELECT * FROM information_schema.role_table_grants;`
-        const result = await this.querySingle(query, []);
-        console.info("⏱ Current privileges: ", ...result.rows);
-    }
-
     async querySingleTyped<T>(text: string, params: Array<any>): Promise<T[]> {
         const client = await this.pool.connect();
         try {
@@ -46,6 +40,9 @@ export class DB {
         }
     } 
     
+    /**
+     * @deprecated Use Typed variant instead
+     */
     querySingle = async (text: string, params: Array<any>) => {
         const client = await this.pool.connect();
         try {
@@ -67,6 +64,9 @@ export class DB {
         }
     };
     
+    /**
+     * @deprecated
+     */
     queryMultiple = async (queries: [text: string, params: Array<any>][]) => {
         const client = await this.pool.connect();
         try {
@@ -96,6 +96,18 @@ export class DB {
         } finally {
             client.release();
         }
+    }
+
+    async startTransaction() {
+        await this.pool.query("BEGIN");
+    }
+    
+    async endTransaction() {
+        await this.pool.query("COMMIT");
+    }
+    
+    async rollback() {
+        await this.pool.query("ROLLBACK");
     }
 }
 
