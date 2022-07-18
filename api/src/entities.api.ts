@@ -6,7 +6,7 @@ export interface Artist {
     picture: ArrayBuffer;
     biography: string;
     socialLinks: SocialLink[];
-    mail: string;
+    mail?: string;
 };
 
 export interface SocialLink {
@@ -23,6 +23,14 @@ export interface Release {
     release_type: string;
     artwork: ArrayBuffer;
     description: string;
+    tracks: {
+        [trackNumber: number]: ReleaseItem
+    },
+    artists: {
+        [position: number]: Artist
+    },
+    genres: string[],
+    streamingLinks: StreamingLink[]
 };
 
 export interface User {
@@ -31,13 +39,25 @@ export interface User {
     pwd_hash: string;
     salt: string;
     role: string;
-}
+};
 
 export interface Genre {
-    id?: NamedCurve;
+    id?: string;
     name: string;
-}
+};
 
 export interface ReleaseItem {
+    id?: string;
+    name: string;
+    genre: string;
+    streamingLinks: StreamingLink[]
+    artists: {
+        [position: number]: Artist
+    }
+};
 
+export interface StreamingLink {
+    id?: string;
+    service: string;
+    link: string;
 }

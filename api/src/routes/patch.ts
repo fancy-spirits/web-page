@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { Artist, Release, SocialLink } from "../entities";
+import { Artist, Release, SocialLink } from "../entities.api";
 import { getArtist } from "../dbHandles/readDB";
 import { updateArtist, updateRelease, updateSocialLink } from "../dbHandles/updateDB";
 

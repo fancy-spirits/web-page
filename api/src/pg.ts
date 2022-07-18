@@ -27,6 +27,24 @@ export class DB {
         const result = await this.querySingle(query, []);
         console.info("⏱ Current privileges: ", ...result.rows);
     }
+
+    async querySingleTyped<T>(text: string, params: Array<any>): Promise<T[]> {
+        const client = await this.pool.connect();
+        try {
+            console.info(`⏱ Performing SQL query '${text}' with arguments ${truncParams(params)}`);
+            const result = await client.query(text, params);
+            console.info(`✅ Query '${text}' finished successfully`);
+            if (result.rowCount < 1) {
+                return [];
+            }
+            return result.rows as T[];
+        } catch (exception) {
+            console.error(`⭕️ SQL-Query '${text}' with arguments ${truncParams(params)} failed: `, exception);
+            return [];
+        } finally {
+            client.release();
+        }
+    } 
     
     querySingle = async (text: string, params: Array<any>) => {
         const client = await this.pool.connect();

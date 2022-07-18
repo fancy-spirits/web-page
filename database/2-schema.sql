@@ -30,6 +30,7 @@ CREATE TABLE "release_items" (
 	"name" TEXT NOT NULL,
 	"genre" uuid NOT NULL,
 	"release" uuid NOT NULL,
+	"position" smallint NOT NULL,
 	CONSTRAINT "release_items_pk" PRIMARY KEY ("id")
 ) WITH (
 	OIDS=FALSE
@@ -50,7 +51,17 @@ CREATE TABLE "genre" (
 CREATE TABLE "release_contribution" (
 	"artist" uuid NOT NULL,
 	"release" uuid NOT NULL,
-	CONSTRAINT "release_contribution_pk" PRIMARY KEY ("artist","release")
+	"position" smallint,
+	CONSTRAINT "release_contribution_pk" PRIMARY KEY ("artist","release", "position")
+) WITH (
+  OIDS=FALSE
+);
+
+CREATE TABLE "release_item_contribution" (
+	"artist" uuid NOT NULL,
+	"release_item" uuid NOT NULL,
+	"position" smallint,
+	CONSTRAINT "release_item_contribution_pk" PRIMARY KEY ("artist","release_item", "position")
 ) WITH (
   OIDS=FALSE
 );
@@ -61,12 +72,21 @@ CREATE TABLE "streaming_link" (
 	"id" uuid NOT NULL DEFAULT uuid_generate_v4(),
 	"service" TEXT NOT NULL,
 	"link" TEXT NOT NULL,
-	"release" uuid NOT NULL,
+	"release_item" uuid NOT NULL,
 	CONSTRAINT "streaming_link_pk" PRIMARY KEY ("id")
 ) WITH (
   OIDS=FALSE
 );
 
+CREATE TABLE "streaming_link_release" (
+	"id" uuid NOT NULL DEFAULT uuid_generate_v4(),
+	"service" TEXT NOT NULL,
+	"link" TEXT NOT NULL,
+	"release" uuid NOT NULL,
+	CONSTRAINT "streaming_link_release_pk" PRIMARY KEY ("id")
+) WITH (
+  OIDS=FALSE
+);
 
 
 CREATE TABLE "social_link" (
@@ -103,7 +123,11 @@ ALTER TABLE "release_items" ADD CONSTRAINT "release_items_fk1" FOREIGN KEY ("rel
 ALTER TABLE "release_contribution" ADD CONSTRAINT "release_contribution_fk0" FOREIGN KEY ("artist") REFERENCES "artists"("id");
 ALTER TABLE "release_contribution" ADD CONSTRAINT "release_contribution_fk1" FOREIGN KEY ("release") REFERENCES "releases"("id");
 
-ALTER TABLE "streaming_link" ADD CONSTRAINT "streaming_link_fk0" FOREIGN KEY ("release") REFERENCES "releases"("id");
+ALTER TABLE "release_item_contribution" ADD CONSTRAINT "release_item_contribution_fk0" FOREIGN KEY ("artist") REFERENCES "artists"("id");
+ALTER TABLE "release_item_contribution" ADD CONSTRAINT "release_item_contribution_fk1" FOREIGN KEY ("release_item") REFERENCES "release_items"("id");
+
+ALTER TABLE "streaming_link" ADD CONSTRAINT "streaming_link_fk0" FOREIGN KEY ("release_item") REFERENCES "release_items"("id");
+ALTER TABLE "streaming_link_release" ADD CONSTRAINT "streaming_link_release_fk0" FOREIGN KEY ("release") REFERENCES "releases"("id");
 
 ALTER TABLE "social_link" ADD CONSTRAINT "social_link_fk0" FOREIGN KEY ("artist") REFERENCES "artists"("id");
 

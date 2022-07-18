@@ -1,5 +1,5 @@
 import { jsonToBuffer } from "../bufferUtil";
-import { Artist, Genre, Release, SocialLink, User } from "../entities";
+import { Artist, Genre, Release, SocialLink, User } from "../entities.api";
 import { DB } from "../pg";
 import * as uuid from "uuid";
 

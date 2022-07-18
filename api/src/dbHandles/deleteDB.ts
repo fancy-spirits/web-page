@@ -1,4 +1,4 @@
-import { Artist, Release } from "../entities";
+import { Artist, Release } from "../entities.api";
 import { getArtist } from "./readDB";
 import { DB } from "../pg";
 

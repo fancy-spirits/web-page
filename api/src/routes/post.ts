@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 
 import { createArtist, createRelease, createSocialLinks } from "../dbHandles/insertDB";
-import { Artist, Release, SocialLink } from "../entities";
+import { Artist, Release, SocialLink } from "../entities.api";
 import { getArtist } from "../dbHandles/readDB";
 
 
