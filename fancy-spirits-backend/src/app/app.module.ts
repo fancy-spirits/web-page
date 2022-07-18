@@ -10,6 +10,8 @@ import { FormsModule } from '@angular/forms';
 import { SharedModule } from './shared/shared.module';
 import { ArtistsModule } from './artists/artists.module';
 import { ReleasePageModule } from './releases/release-page.module';
+import { StoreModule } from '@ngrx/store';
+import { appReducer } from './store/app.reducer';
 
 @NgModule({
   declarations: [
@@ -24,7 +26,8 @@ import { ReleasePageModule } from './releases/release-page.module';
     FormsModule,
     SharedModule,
     ArtistsModule,
-    ReleasePageModule
+    ReleasePageModule,
+    StoreModule.forRoot(appReducer)
   ],
   providers: [],
   bootstrap: [AppComponent]

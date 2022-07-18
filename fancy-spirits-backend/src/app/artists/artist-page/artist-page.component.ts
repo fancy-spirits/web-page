@@ -1,6 +1,4 @@
-import { HttpClient } from '@angular/common/http';
-import { Component, ComponentRef, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
-import { APIConnectorService } from '../../shared/services/apiconnector.service';
+import { Component, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { Artist } from '../../entities';
 import { ImageCoderService } from '../../shared/components/img-uploader/image-coder.service';
 import socialMediaIcons from "../../socialMedia";
@@ -8,6 +6,9 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { faPenToSquare, faTrashCan } from '@fortawesome/free-regular-svg-icons';
 import { AddArtistModalComponent } from '../add-artist-modal/add-artist-modal.component';
 import { DialogService } from '../../shared/services/dialog.service';
+import { Store } from '@ngrx/store';
+import { AppState } from 'src/app/store/app.reducer';
+import { DeleteArtistActions, FetchArtistsActions, UtilArtistsActions } from '../store/artists.actions';
 
 @Component({
   selector: 'app-artist-page',
@@ -23,54 +24,49 @@ export class ArtistPageComponent implements OnInit {
   artists: Artist[] = [];
 
   @ViewChild("confirmationDialog", {read: ViewContainerRef}) confirmationDialog!: ViewContainerRef;
-
   @ViewChild("modalAdd", {read: ViewContainerRef}) modalAdd!: ViewContainerRef;
-  AddArtistModalComponent = AddArtistModalComponent;
-  visibleModal?: ComponentRef<any> = undefined;
 
   constructor(
-    private httpClient: HttpClient, 
-    private api: APIConnectorService, 
     private imageCoderService: ImageCoderService,
     public sanitizer: DomSanitizer,
-    private dialogService: DialogService
+    private dialogService: DialogService,
+    private store: Store<AppState>
   ) { }
 
   ngOnInit(): void {
-    this.loadArtists();
+    this.store.dispatch(FetchArtistsActions.FETCH_ARTISTS());
+    this.store.select("artists")
+      .subscribe(({artists, dialog}) => {
+        this.artists = artists;
+
+        if (dialog.visible) {
+          this.showArtistDialog();
+        } else {
+          this.closeArtistDialog();
+        }
+
+        if (!!dialog.error) {
+          this.dialogService.showInfoDialog(this.sanitizer, this.confirmationDialog, "Error", dialog.error);
+        }
+
+        if(!!dialog.info) {
+          this.dialogService.showInfoDialog(this.sanitizer, this.confirmationDialog, "Info", dialog.info)
+            .then(() => this.store.dispatch(UtilArtistsActions.CLEAR_INFO()));
+        }
+      })
   }
 
   onNewArtist(){
-    (this.visibleModal as ComponentRef<AddArtistModalComponent>)?.instance.cancel();
-    const modal = this.modalAdd.createComponent(AddArtistModalComponent);
-    modal.instance.artistOutput.subscribe(this.onArtistCreated);
-    modal.instance.mode = "add";
-    this.visibleModal = modal;
+    this.store.dispatch(UtilArtistsActions.OPEN_ARTIST_DIALOG({
+      mode: "add"
+    }));
   }
 
-  loadArtists = () => {
-    this.httpClient.get(this.api.generateURL("/artists"), {observe: "body"}, )
-      .subscribe({
-        next: body => {
-          this.artists = body as Artist[];
-        },
-        error: _error => console.log("Artists could not be loaded")
-      });
-  }
-
-  onArtistCreated = ([success, mode]: [success: boolean | "cancel", mode: "add" | "edit"]) => {
-    switch (success) {
-      // @ts-expect-error
-      case true:
-        this.loadArtists();
-      case 'cancel':
-        this.modalAdd.remove(0);
-        this.visibleModal = undefined;
-        break;
-      case false:
-        const message = `${mode === "add" ? "Creation failed!" : "Editing artist failed!"}`
-        this.dialogService.showInfoDialog(this.sanitizer, this.confirmationDialog, "Error", message);
-    }
+  onEditArtist(id: string) {
+    this.store.dispatch(UtilArtistsActions.OPEN_ARTIST_DIALOG({
+      mode: "edit",
+      artistToBeUpdated: this.artists.find(artist => artist.id === id)!
+    }));
   }
 
   getSocialLinks(artist: Artist) {
@@ -81,13 +77,13 @@ export class ArtistPageComponent implements OnInit {
     return artist.socialLinks.filter(link => link.platform_type === "streaming");
   }
 
-  onEditArtist(id: string) {
-    (this.visibleModal as ComponentRef<AddArtistModalComponent>)?.instance.cancel();
-    const modal = this.modalAdd.createComponent(AddArtistModalComponent);
-    modal.instance.artistOutput.subscribe(this.onArtistCreated);
-    modal.instance.mode = "edit";
-    modal.instance.artistInput = this.artists.find(artist => artist.id === id)!;
-    this.visibleModal = modal;
+  showArtistDialog() {
+    this.modalAdd.clear();
+    this.modalAdd.createComponent(AddArtistModalComponent);
+  }
+
+  closeArtistDialog() {
+    this.modalAdd.clear();
   }
 
   async onDeleteArtist(artist: Artist) {
@@ -98,13 +94,6 @@ export class ArtistPageComponent implements OnInit {
       return;
     }
 
-    this.httpClient.delete(this.api.generateURL(`/artists/${artist.name}`), {observe: "response"})
-      .subscribe({
-        next: () => {
-          this.loadArtists();
-          this.dialogService.showInfoDialog(this.sanitizer, this.confirmationDialog, "Info", `${artist.name} was fired sucessfully`);
-        },
-        error: () =>this.dialogService.showInfoDialog(this.sanitizer, this.confirmationDialog, "Info", `${artist.name} could not be fired…`)
-      });
+    this.store.dispatch(DeleteArtistActions.DELETE_ARTIST({artistName: artist.name}));
   }
 }

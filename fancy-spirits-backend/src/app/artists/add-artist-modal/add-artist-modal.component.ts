@@ -1,10 +1,12 @@
-import { HttpClient } from '@angular/common/http';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import { APIConnectorService } from '../../shared/services/apiconnector.service';
 import { Artist, SocialLink } from '../../entities';
 import socialLinkIcons from "../../socialMedia";
 import { ImageCoderService } from "../../shared/components/img-uploader/image-coder.service";
+import { Store } from '@ngrx/store';
+import { AppState } from 'src/app/store/app.reducer';
+import { CreateArtistActions, UpdateArtistActions, UtilArtistsActions } from '../store/artists.actions';
+import { take } from 'rxjs';
 
 @Component({
   selector: 'app-add-artist-modal',
@@ -14,39 +16,46 @@ import { ImageCoderService } from "../../shared/components/img-uploader/image-co
 export class AddArtistModalComponent implements OnInit {
   socialLinkIcons = socialLinkIcons;
 
-  @Input()
-  mode!: "add" | "edit";
-
-  @Input("artist")
   artistInput?: Artist;
 
-  @Output()
-  artistOutput = new EventEmitter<[boolean | "cancel", "add" | "edit"]>();
-
+  // To be replaced by Form Binding
   artistName?: string;
   biography?: string;
   picture?: string;
   mail?: string;
-
   socialLinks!: SocialLink[];
 
   submitBtnCaption!: string;
   title!: string;
 
-  onSave = () => {
-    if (this.mode === "add") {
-      this.onCreateNewArtist();
-    } else {
-      this.onUpdateArtist();
-    }
-  }
+  onSave!: () => void;
 
-  findSocialLink(key: string) {
-    const socialLink = this.socialLinks.find(link => link.platform === key);
-    if (!socialLink) {
-      throw "Invalid Key";
-    }
-    return socialLink;
+  constructor(
+    protected sanitizer: DomSanitizer,
+    protected imageCoder: ImageCoderService,
+    private store: Store<AppState>
+  ) { }
+
+  ngOnInit(): void {
+    this.store.select("artists")
+      .pipe(
+        take(1)
+      )
+      .subscribe(({dialog}) => {
+        switch (dialog.mode) {
+          case "add": 
+            this.submitBtnCaption = "Add";
+            this.title = "Add Artist"; 
+            this.onSave = this.onUpdateArtist.bind(this);
+            break;
+          case "edit":
+            this.initEdit(); 
+            this.onSave = this.onCreateNewArtist.bind(this);
+            break;
+        }
+        this.artistInput = dialog.artistToBeUpdated;
+        this.initSocialLinks();
+      });
   }
 
   onCreateNewArtist() {
@@ -54,7 +63,9 @@ export class AddArtistModalComponent implements OnInit {
       || !this.biography ||this.biography.trim().length === 0 
       || !this.picture || this.picture.trim().length === 0 
       || !this.mail || this.mail.trim().length === 0) {
-        this.artistOutput.emit([false, this.mode]);
+        this.store.dispatch(CreateArtistActions.CREATE_ARTIST_ERROR({
+          errorMsg: "All fields are required!"
+        }));
         return;
     }
     const artist: Artist = {
@@ -65,13 +76,7 @@ export class AddArtistModalComponent implements OnInit {
       mail: this.mail
     };
 
-    this.httpClient.post(this.api.generateURL("/artists"), artist, { observe: "response"})
-      .subscribe({
-        next: response => {
-          this.artistOutput.emit([response.status < 400, this.mode]);
-        },
-        error: _error => this.artistOutput.emit([false, this.mode])
-      });
+    this.store.dispatch(CreateArtistActions.CREATE_ARTIST({artist}));
   }
 
   onUpdateArtist() {
@@ -80,7 +85,9 @@ export class AddArtistModalComponent implements OnInit {
       || !this.biography ||this.biography.trim().length === 0 
       || !this.picture || this.picture.trim().length === 0 
       || !this.mail || this.mail.trim().length === 0) {
-        this.artistOutput.emit([false, this.mode]);
+        this.store.dispatch(CreateArtistActions.CREATE_ARTIST_ERROR({
+          errorMsg: "All fields are required!"
+        }));
         return;
     }
     const oldImage = this.imageCoder.bufferToString(this.artistInput.picture);
@@ -92,33 +99,8 @@ export class AddArtistModalComponent implements OnInit {
       picture: this.imageCoder.stringToBuffer(this.checkForChange(oldImage, this.picture)),
       socialLinks: this.socialLinks
     };
-    this.httpClient.patch(this.api.generateURL(`/artists/${this.artistInput!.name}`), artist, {observe: "response"})
-      .subscribe({
-        next: response => {
-          this.artistOutput.emit([response.status < 400, this.mode]);
-        },
-        error: _error => this.artistOutput.emit([false, this.mode])
-      });
-  }
 
-  private checkForChange<T>(oldProp: T, newProp: T): T | undefined {
-    return oldProp !== newProp ? newProp : undefined;
-  }
-
-  cancel() {
-    this.artistOutput.emit(["cancel", this.mode]);
-  }
-
-  constructor(
-    private httpClient: HttpClient, 
-    private api: APIConnectorService, 
-    protected sanitizer: DomSanitizer,
-    protected imageCoder: ImageCoderService
-  ) { }
-
-  initCreate() {
-    this.submitBtnCaption = "Add";
-    this.title = "Add Artist";
+    this.store.dispatch(UpdateArtistActions.UPDATE_ARTIST({updatedArtist: artist, originalName: this.artistInput.name}));
   }
 
   initEdit() {
@@ -136,18 +118,6 @@ export class AddArtistModalComponent implements OnInit {
     this.mail = this.artistInput.mail;
     this.socialLinks = this.artistInput.socialLinks;
     this.picture = this.imageCoder.bufferToString(this.artistInput.picture);
-  }
-
-  ngOnInit(): void {
-    switch (this.mode) {
-      case "add": 
-        this.initCreate(); break;
-      case "edit":
-        this.initEdit(); break;
-      default: 
-        throw "Mode must be set!";
-    }
-    this.initSocialLinks();
   }
 
   initSocialLinks() {
@@ -177,5 +147,21 @@ export class AddArtistModalComponent implements OnInit {
       }
       link.link = socialLink.link;
     })
+  }
+
+  findSocialLink(key: string) {
+    const socialLink = this.socialLinks.find(link => link.platform === key);
+    if (!socialLink) {
+      throw "Invalid Key";
+    }
+    return socialLink;
+  }
+
+  private checkForChange<T>(oldProp: T, newProp: T): T | undefined {
+    return oldProp !== newProp ? newProp : undefined;
+  }
+
+  cancel() {
+    this.store.dispatch(UtilArtistsActions.CANCEL_ARTIST_DIALOG());
   }
 }
