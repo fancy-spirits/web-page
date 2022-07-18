@@ -1,5 +1,5 @@
 import { jsonToBuffer } from "../bufferUtil";
-import { Artist, Genre, Release, ReleaseItem, SocialLink, StreamingLink, User } from "../entities.api";
+import { Artist, Genre, Release, ReleaseItem, SocialLink, User } from "../entities.api";
 import { DB } from "../pg";
 import { DBSchema } from "../entities.db";
 
