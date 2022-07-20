@@ -26,7 +26,7 @@ export default {
         }
         const artists: Artist[] = await Promise.all(artistNames.map(async name => (await getArtist(name))!));
 
-        const createdRelease = await createRelease(release, artists);
+        const createdRelease = await createRelease(release);
         res.json(createdRelease);
     },
     "/artists/:name/socialLinks": async (req, res) => {
