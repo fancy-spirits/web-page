@@ -1,6 +1,7 @@
 import { createReducer, on } from "@ngrx/store";
 import { Artist } from "src/app/entities";
 import { CreateArtistActions, FetchArtistsActions, UpdateArtistActions, DeleteArtistActions, UtilArtistsActions } from "./artists.actions";
+import * as _ from "lodash";
 
 const initialState = {
     artists: [] as Artist[],
@@ -68,13 +69,14 @@ function handleCreateArtistError(state: ArtistState, payload: {errorMsg: string}
     };
 }
 
-function handleUpdateArtistSuccess(state: ArtistState, payload: {updatedArtist: Artist}): ArtistState {
+function handleUpdateArtistSuccess(state: ArtistState, payload: {updatedArtist: Partial<Artist>}): ArtistState {
     const index = state.artists.findIndex(({id}) => id === payload.updatedArtist.id);
     if (index === -1) {
         return state;
     }
     const artists = [...state.artists];
-    artists[index] = payload.updatedArtist;
+    const mergedArtist = _.merge(artists[index], payload.updatedArtist);
+    artists[index] = mergedArtist;
     return {
         ...state,
         artists,

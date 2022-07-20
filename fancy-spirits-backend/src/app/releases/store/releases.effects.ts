@@ -39,11 +39,14 @@ export class ReleasesEffects {
     ));
 
     updateRelease = createEffect(() => this.actions$.pipe(
-        ofType(CreateReleaseActions.CREATE_RELEASE),
+        ofType(UpdateReleaseActions.UPDATE_RELEASE),
         mergeMap(({release}) => {
-            return this.httpClient.patch<Release>(this.api.generateURL(`/releases/${release.id}`), release)
+            return this.httpClient.patch<void>(this.api.generateURL(`/releases/${release.id}`), release)
                 .pipe(
-                    map(updatedRelease => UpdateReleaseActions.UPDATE_RELEASE_SUCCESS({updatedRelease})),
+                    mergeMap(_ => [
+                        UpdateReleaseActions.UPDATE_RELEASE_SUCCESS({updatedRelease: release}),
+                        FetchReleaseActions.FETCH_RELEASES()
+                    ]),
                     catchError(_error => of(UpdateReleaseActions.UPDATE_RELEASE_ERROR({
                         errorMsg: "Editing release failed!"
                     })))

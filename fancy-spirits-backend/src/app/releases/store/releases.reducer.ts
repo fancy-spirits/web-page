@@ -1,6 +1,7 @@
 import { createReducer, on } from "@ngrx/store";
 import { Release } from "src/app/entities";
 import { CreateReleaseActions, DeleteReleaseActions, FetchReleaseActions, UpdateReleaseActions, UtilReleasesActions } from "./releases.actions";
+import * as _ from "lodash";
 
 const initialState = {
     releases: [] as Release[],
@@ -62,13 +63,14 @@ function handleCreateReleaseError(state: ReleaseState, payload: { errorMsg: stri
     };
 }
 
-function handleUpdateReleaseSuccess(state: ReleaseState, payload: {updatedRelease: Release}): ReleaseState {
+function handleUpdateReleaseSuccess(state: ReleaseState, payload: {updatedRelease: Partial<Release>}): ReleaseState {
     const index = state.releases.findIndex(release => release.id === payload.updatedRelease.id);
     if (index === -1) {
         return state;
     }
     const releases = [...state.releases];
-    releases[index] = payload.updatedRelease;
+    const mergedRelease = _.merge(releases[index], payload.updatedRelease);
+    releases[index] = mergedRelease;
     return {
         ...state,
         releases,

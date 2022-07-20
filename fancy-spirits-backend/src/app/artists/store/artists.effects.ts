@@ -3,6 +3,7 @@ import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { catchError, map, of, mergeMap } from "rxjs";
 import { Artist } from "src/app/entities";
+import { FetchReleaseActions } from "src/app/releases/store/releases.actions";
 import { APIConnectorService } from "src/app/shared/services/apiconnector.service";
 import { CreateArtistActions, DeleteArtistActions, FetchArtistsActions, UpdateArtistActions } from "./artists.actions";
 
@@ -43,9 +44,13 @@ export class ArtistEffects {
     updateArtist = createEffect(() => this.actions$.pipe(
         ofType(UpdateArtistActions.UPDATE_ARTIST),
         mergeMap(({updatedArtist, originalName}) => {
-            return this.httpClient.patch<Artist>(this.api.generateURL(`/artists/${originalName}`), updatedArtist)
+            return this.httpClient.patch<void>(this.api.generateURL(`/artists/${originalName}`), updatedArtist)
                 .pipe(
-                    map(updatedArtist => UpdateArtistActions.UPDATE_ARTIST_SUCCESS({updatedArtist})),
+                    mergeMap(() => [
+                        UpdateArtistActions.UPDATE_ARTIST_SUCCESS({updatedArtist}),
+                        FetchArtistsActions.FETCH_ARTISTS(),
+                        FetchReleaseActions.FETCH_RELEASES()
+                    ]),
                     catchError(_error => of(UpdateArtistActions.UPDATE_ARTIST_ERROR({
                         errorMsg: "Editing artist failed!"
                     })))
@@ -58,7 +63,10 @@ export class ArtistEffects {
         mergeMap(({artistName}) => {
             return this.httpClient.delete<void>(this.api.generateURL(`/artists/${artistName}`))
                 .pipe(
-                    map(() => DeleteArtistActions.DELETE_ARTIST_SUCCESS({artistName})),
+                    mergeMap(() => [
+                        DeleteArtistActions.DELETE_ARTIST_SUCCESS({artistName}),
+                        FetchReleaseActions.FETCH_RELEASES()
+                    ]),
                     catchError(_error => of(DeleteArtistActions.DELETE_ARTIST_ERROR({
                         errorMsg: `${artistName} could not be fired…`
                     })))

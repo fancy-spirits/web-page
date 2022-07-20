@@ -23,7 +23,7 @@ export const UpdateArtistActions = {
     ),
     UPDATE_ARTIST_SUCCESS: createAction(
         "[Artists] Update artist success",
-        props<{updatedArtist: Artist}>()
+        props<{updatedArtist: Partial<Artist>}>()
     ),
     UPDATE_ARTIST_ERROR: createAction(
         "[Artists] Update artist failed",

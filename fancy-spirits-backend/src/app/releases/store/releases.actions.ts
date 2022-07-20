@@ -19,11 +19,11 @@ export const CreateReleaseActions = {
 export const UpdateReleaseActions = {
     UPDATE_RELEASE: createAction(
         "[Releases] Update release",
-        props<{release: Release}>()
+        props<{release: Partial<Release>}>()
     ),
     UPDATE_RELEASE_SUCCESS: createAction(
         "[Releases] Update release success",
-        props<{updatedRelease: Release}>()
+        props<{updatedRelease: Partial<Release>}>()
     ),
     UPDATE_RELEASE_ERROR: createAction(
         "[Releases] Update release failed",

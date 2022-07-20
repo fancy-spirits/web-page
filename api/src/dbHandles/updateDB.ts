@@ -6,7 +6,7 @@ import { createReleaseItems } from "./insertDB";
 
 const db = DB.getInstance();
 
-export async function updateArtist(artist: Partial<Artist>, name: string) {
+export async function updateArtist(artist: Partial<Artist>, name: string): Promise<Partial<Artist>> {
     try {
         await db.startTransaction();
         if (!name) {
@@ -40,14 +40,14 @@ export async function updateArtist(artist: Partial<Artist>, name: string) {
             await db.querySingleTyped<void>(deleteStatementSocialLinks, [existingArtist.id]);
 
             const insertStatementSocialLinks = `INSERT INTO social_link (platform, link, platform_type, artist) VALUES ($1, $2, $3, $4) RETURNING *`;
-            const newSocialLinks = (await Promise.all(artist.socialLinks.map(async link => {
+            await Promise.all(artist.socialLinks.map(async link => {
                 return db.querySingleTyped<DBSchema.SocialLink>(insertStatementSocialLinks, [
                     link.platform,
                     link.link,
                     link.platform_type,
                     artist.id
                 ]);
-            })))[0];
+            }));
         }
     
         // Update Artist
@@ -55,7 +55,9 @@ export async function updateArtist(artist: Partial<Artist>, name: string) {
         const updatedArtistResult = await db.querySingleTyped<DBSchema.Artist>(updateStatementArtist, [updatedArtist.biography, updatedArtist.name, updatedArtist.picture, name]); 
         
         await db.endTransaction();
-        return updatedArtistResult[0];
+        return {
+            ...updatedArtistResult[0],
+        };
     } catch (e) {
         await db.rollback();
         throw e;
