@@ -11,6 +11,10 @@ export async function deleteArtistSafe(name: string) {
 
         const queryStatementArtist = `SELECT * FROM artists WHERE name = $1`;
         const artist = (await db.querySingleTyped<DBSchema.Artist>(queryStatementArtist, [name]))[0];
+
+        // Delete user
+        const deleteStatementUser = `DELETE FROM users WHERE id = $1`;
+        await db.querySingleTyped<void>(deleteStatementUser, [artist.user]);
         
         // Delete Artist
         const deleteStatementArtist = `DELETE FROM artists WHERE name = $1`;

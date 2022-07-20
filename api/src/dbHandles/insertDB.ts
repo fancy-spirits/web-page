@@ -64,56 +64,7 @@ export async function createRelease(release: Release): Promise<Partial<Release>>
             );
         }));
         
-        const insertStatementReleaseItems = `INSERT INTO release_items (name, genre, release, position) VALUES ($1, $2, $3, $4) RETURNING *`;
-        const createdReleaseItems = await Promise.all(Object.entries(release.tracks).map(async ([position, releaseItem]) => {
-            // Create genre if required
-            let genres = await db.querySingleTyped<DBSchema.Genre | Genre>(`SELECT * FROM genres WHERE name = $1`, [releaseItem.genre]);
-            if (genres.length === 0) {
-                genres = [await createGenre({name: releaseItem.genre})]
-            }
-
-            // Create Release Item
-            const createdReleaseItem = await db.querySingleTyped<DBSchema.ReleaseItem>(insertStatementReleaseItems, [
-                releaseItem.name,
-                genres[0].id!,
-                createdRelease.id,
-                +position
-            ]);
-
-            // Create Release Item Contributions
-            const insertStatementReleaseItemContribution = `INSERT INTO release_item_contribution (artist, release_item, position) VALUES ($1, $2, $3) RETURNING *`;
-            await Promise.all(Object.entries(releaseItem.artists).map(async ([position, artist]) => {
-                await db.querySingleTyped<DBSchema.ReleaseItemContribution>(
-                    insertStatementReleaseItemContribution,
-                    [
-                        artist.id!,
-                        releaseItem,
-                        +position
-                    ]
-                );
-            }));
-
-            // Insert ReleaseItem Streaming Links
-            const insertStatementReleaseItemLinks = `INSERT INTO streaming_link (service, link, release_item) VALUES ($1, $2, $3) RETURNING *`;
-            const createdReleaseItemStreamingLinks = (await Promise.all(releaseItem.streamingLinks.map(async streamingLink => {
-                return await db.querySingleTyped<DBSchema.StreamingLinkReleaseItem>(
-                    insertStatementReleaseItemLinks,
-                    [
-                        streamingLink.service,
-                        streamingLink.link,
-                        createdReleaseItem[0].id
-                    ]
-                )
-            })))[0];
-
-            return {
-                ...createdReleaseItem[0],
-                genre: genres[0].id!,
-                artists: [] as Artist[],
-                streamingLinks: createdReleaseItemStreamingLinks,
-                position: +position
-            };
-        }));
+        const createdReleaseItems = await createReleaseItems(release.tracks, createdRelease.id);
 
         const finalReleaseItems: {[position: number]: ReleaseItem} = {};
         createdReleaseItems.forEach(releaseItem => finalReleaseItems[releaseItem.position] = releaseItem)
@@ -163,4 +114,57 @@ export async function createGenre(genre: Genre): Promise<Genre> {
     const createdGenre = await db.querySingleTyped<DBSchema.Genre>(insertStatementGenre, [genre.name]);
 
     return createdGenre[0];
+}
+
+export async function createReleaseItems(tracks: {[position: number]: ReleaseItem}, releaseID: string) {
+    const insertStatementReleaseItems = `INSERT INTO release_items (name, genre, release, position) VALUES ($1, $2, $3, $4) RETURNING *`;
+    return await Promise.all(Object.entries(tracks).map(async ([position, releaseItem]) => {
+        // Create genre if required
+        let genres = await db.querySingleTyped<DBSchema.Genre | Genre>(`SELECT * FROM genres WHERE name = $1`, [releaseItem.genre]);
+        if (genres.length === 0) {
+            genres = [await createGenre({name: releaseItem.genre})]
+        }
+
+        // Create Release Item
+        const createdReleaseItem = await db.querySingleTyped<DBSchema.ReleaseItem>(insertStatementReleaseItems, [
+            releaseItem.name,
+            genres[0].id!,
+            releaseID,
+            +position
+        ]);
+
+        // Create Release Item Contributions
+        const insertStatementReleaseItemContribution = `INSERT INTO release_item_contribution (artist, release_item, position) VALUES ($1, $2, $3) RETURNING *`;
+        await Promise.all(Object.entries(releaseItem.artists).map(async ([position, artist]) => {
+            await db.querySingleTyped<DBSchema.ReleaseItemContribution>(
+                insertStatementReleaseItemContribution,
+                [
+                    artist.id!,
+                    releaseItem,
+                    +position
+                ]
+            );
+        }));
+
+        // Insert ReleaseItem Streaming Links
+        const insertStatementReleaseItemLinks = `INSERT INTO streaming_link (service, link, release_item) VALUES ($1, $2, $3) RETURNING *`;
+        const createdReleaseItemStreamingLinks = (await Promise.all(releaseItem.streamingLinks.map(async streamingLink => {
+            return await db.querySingleTyped<DBSchema.StreamingLinkReleaseItem>(
+                insertStatementReleaseItemLinks,
+                [
+                    streamingLink.service,
+                    streamingLink.link,
+                    createdReleaseItem[0].id
+                ]
+            )
+        })))[0];
+
+        return {
+            ...createdReleaseItem[0],
+            genre: genres[0].id!,
+            artists: [] as Artist[],
+            streamingLinks: createdReleaseItemStreamingLinks,
+            position: +position
+        };
+    }));
 }

@@ -2,6 +2,7 @@ import { jsonToBuffer } from "../bufferUtil";
 import { Artist, Release, SocialLink, User } from "../entities.api";
 import { DBSchema } from "../entities.db";
 import { DB } from "../pg";
+import { createReleaseItems } from "./insertDB";
 
 const db = DB.getInstance();
 
@@ -86,15 +87,15 @@ async function updateUser(user: Partial<User>): Promise<User> {
     };
 }
 
-/**
- * @todo
- */
-export async function updateRelease(release: Partial<Release>, id: string) {
+export async function updateRelease(release: Partial<Release>, id: string): Promise<Partial<Release>> {
     try {
         await db.startTransaction();
+        
         const queryStatementRelease = `SELECT * FROM releases WHERE id = $1`;
         const existingReleaseResult = await db.querySingleTyped<DBSchema.Release>(queryStatementRelease, [id]);
         const existingRelease = existingReleaseResult[0];
+        
+        // Update Release Header
         const updatedRelease = {
             ...{name: release.name ?? existingRelease.name},
             ...{description: release.description ?? existingRelease.description},
@@ -105,11 +106,52 @@ export async function updateRelease(release: Partial<Release>, id: string) {
         const updateStatementRelease = `UPDATE releases SET name = $1, description = $2, artwork = $3, release_date = $4, release_type = $5 WHERE id = $6`;
         const updatedReleaseResult = await db.querySingleTyped<DBSchema.Release>(updateStatementRelease, [updatedRelease.name, updatedRelease.description, Buffer.from(updatedRelease.artwork), updatedRelease.release_date, updatedRelease.release_type]);
         
-        // TODO: Streaming Links (Release/release item), release items, artists(Release/release item), genre(releaseItem)
+        // Artists changed
+        if (!!release.artists && Object.entries(release.artists).length > 0) {
+            // Delete previous release contributions
+            const deleteStatementReleaseContributions = `DELETE FROM release_contribution WHERE release = $1`;
+            await db.querySingleTyped<void>(deleteStatementReleaseContributions, [existingRelease.id]);
 
+            // Create new Release Contributions
+            const insertStatementReleaseContributions = `INSERT INTO release_contribution (release, artist, position) VALUES ($1, $2, $3)`;
+            await Promise.all(Object.entries(release.artists).map(async ([position, artist]) => {
+                await db.querySingleTyped<void>(insertStatementReleaseContributions, [existingRelease.id, artist.id, +position]);
+            }));
+        }
+
+        // Release Streaming Links changed
+        if (!!release.streamingLinks && release.streamingLinks.length > 0) {
+            // Delete Release Streaming Links
+            const deleteStatementReleaseStreamingLinks = `DELETE FROM streaming_link_release WHERE release = $1`;
+            await db.querySingleTyped<void>(deleteStatementReleaseStreamingLinks, [existingRelease.id]);
+
+            // Create new Streaming Links
+            const insertStatementReleaseStreamingLinks = `INSERT INTO streaming_link_release (release, service, link) VALUES ($1, $2, $3)`;
+            await Promise.all(release.streamingLinks.map(async streamingLink => {
+                await db.querySingleTyped<void>(insertStatementReleaseStreamingLinks, [existingRelease.id, streamingLink.service, streamingLink.link]);
+            }));
+        }
+
+        // Tracks changed
+        if (!!release.tracks && Object.entries(release.tracks).length > 0) {
+            // Delete all Release Items
+            const deleteStatementReleaseItems = `DELETE FROM release_items WHERE release = $1`;
+            await db.querySingleTyped<void>(deleteStatementReleaseItems, [existingRelease.id]);
+
+            // Delete all release item contributions
+            const deleteStatementReleaseItemContributions = `DELETE FROM release_item_contribution WHERE release_item NOT IN (SELECT id FROM release_items)`;
+            await db.querySingleTyped<void>(deleteStatementReleaseItemContributions, []);
+
+            // Delete all Streaming Links (Release Items)
+            const deleteStatementReleaseItemStreamingLinks = `DELETE FROM streaming_link WHERE release_item NOT IN (SELECT id FROM release_items)`;
+            await db.querySingleTyped<void>(deleteStatementReleaseItemStreamingLinks, []);
+            
+            // Create new Release Items etc.
+            await createReleaseItems(release.tracks, existingRelease.id);
+        }
 
         await db.endTransaction();
-        return updatedReleaseResult[0] as Release;
+        return updatedReleaseResult[0];
     } catch (e) {
         await db.rollback();
         throw e;
